@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #include("_header.html")
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+<div id="root">
+    <div data-reactroot="" class="layout___1PDTy">
+        <header class="header___FCbfv">
+            <a href="/">
+                <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
+            <div class="contact___11cqy">
+                <a href="/create">新增</a>
+            </div>
+        </header>
+        <!--<nav class="nav___9wFJ-">
+            <a href="/study">学习中</a>
+            <a href="/review">复习中</a>
+            <a href="/relearn" class="active___2q-q_">再学习</a>
+        </nav>-->
+        <main>
+            <div class="touchable___25WDv" style="display: block;">
+                <a class="timelineItem___1y46j link___2jKS2" target="_self">
+                    <h2>#(memo.title??)</h2>
+                    <div class="meta___3CKfY">
+                <span>#(memo.user) / #(memo.category)
+                    <i class="split___1I-N5"></i> #date(memo.create_time, "yyyy.MM.dd HH:mm")
+                    <i class="split___1I-N5"></i>
+                </span>
+                    </div>
+                    <div class="summary___SGzH5">
+                        <div class="bp-pure___3xB_W">
+                            <div class="bp-beauty-line___3EG0Z" style="letter-spacing: 0.733333px;">
+                                #(memo.content??)
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </main>
+        <footer class="footer___1Bw6q">
+            <div class="copyRight___2cP8i">© 2017 Cheerme.cn</div>
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

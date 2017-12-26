@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+    #include("_header.html")
+    <link href="/css/weui.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="root">
+    <div data-reactroot="" class="layout___1PDTy">
+        <header class="header___FCbfv">
+            <a href="/">
+                <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
+            <div class="contact___11cqy">
+                <a href="/">返回</a>
+            </div>
+        </header>
+        <form action="/docreate" method="post">
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cells__title">标题 <span>#(titleMsg)</span></div>
+                <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" name="memo.title" type="text" placeholder="请输入标题"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weui-cells__title">内容 <span>#(contentMsg)</span></div>
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea" name="memo.content" placeholder="请输入内容" rows="3"></textarea>
+                            <div class="weui-textarea-counter"><span>0</span>/200</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="weui-cells__title">分类 <span>#(titleMsg)</span></div>
+                <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" name="memo.category" type="text" placeholder="请输入分类"/>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="weui-cells__title">用户 <span>#(titleMsg)</span></div>
+                <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" name="memo.user" type="text" placeholder="请输入用户"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-btn-area">
+                    <input type="submit"class="weui-btn weui-btn_primary" value="确定">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #include("_header.html")
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+<div id="root">
+    <div data-reactroot="" class="layout___1PDTy">
+        <header class="header___FCbfv">
+            <a href="/">
+                <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
+            <div class="contact___11cqy">
+                <a href="/create">新增</a>
+            </div>
+        </header>
+        <!--<nav class="nav___9wFJ-">
+            <a href="/study">学习中</a>
+            <a href="/review">复习中</a>
+            <a href="/relearn" class="active___2q-q_">再学习</a>
+        </nav>-->
+        <main>
+            <div>
+                <div>
+                    <template v-for="(value, key) in memos" v-if="value.length > 0">
+                        <template v-for="item in value">
+                            <div class="touchable___25WDv" style="display: block;">
+                                <a class="timelineItem___1y46j link___2jKS2" :href="formatUrl(item.id)" target="_self">
+                                    <h2 class="enableVisited">{{ item.title }}</h2>
+                                    <div class="summary___SGzH5">
+                                        <div class="bp-pure___3xB_W">
+                                            <div class="bp-beauty-line___3EG0Z" style="letter-spacing: 0.733333px;">
+                                                {{ item.content }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="meta___3CKfY">
+                                        <span>{{ item.user }} </span>
+                                        <span>/ {{ item.category }}</span>
+                                        <span>
+                                            <i class="split___1I-N5"></i>
+                                            {{formatDate(key, item.create_time)}}
+                                            <i class="split___1I-N5"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                        </template>
+                        <div id="masking" class="masking___10CSs"></div>
+                    </template>
+                    <!--<div class="listButtonFix___2Thj0">
+                        <div class="loading___12UUz"><img src="/img/loading.gif"></div>
+                    </div>-->
+                </div>
+            </div>
+        </main>
+        <footer class="footer___1Bw6q">
+            <div class="copyRight___2cP8i">© 2017 Cheerme.cn</div>
+        </footer>
+    </div>
+</div>
+
+
+<script src="/js/vue.js"></script>
+<script src="/js/vue-resource.min.js"></script>
+<script src="/js/timeago.js"></script>
+<script>
+    window.vm = new Vue({
+        el: "#root",
+        data: {
+            memos: {
+                m0: [],
+                m1: [],
+                m2: [],
+                m4: []
+            }
+        },
+        mounted: function () {
+            this.getData(0);
+            this.getData(1);
+            this.getData(2);
+            this.getData(4);
+        },
+        methods: {
+            getData: function (type) {
+                this.$http.get("get/" + type + "-day").then(function (response) {
+                    this.memos["m" + type] = response.data;
+                });
+            },
+            formatUrl: function (key) {
+                return '/detail/' + key;
+            },
+            formatDate: function (key, create_time) {
+                return timeago().format(create_time, 'zh_CN');
+            }
+        }
+    });
+</script>
+</body>
+</html>
