@@ -1,62 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     #include("_header.html")
     <link href="/css/main.css" rel="stylesheet">
 </head>
 <body>
-<div id="root">
-    <div data-reactroot="" class="layout___1PDTy">
-        <header class="header___FCbfv">
-            <a href="/">
-                <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
-            <div class="contact___11cqy">
-                <a href="/create">新增</a>
-            </div>
-        </header>
-        <!--<nav class="nav___9wFJ-">
-            <a href="/study">学习中</a>
-            <a href="/review">复习中</a>
-            <a href="/relearn" class="active___2q-q_">再学习</a>
-        </nav>-->
-        <main>
-            <div>
+<div class="container">
+    <div id="root">
+        <div data-reactroot="" class="layout___1PDTy">
+            <header class="header___FCbfv">
+                <a href="/">
+                    <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
+                <div class="contact___11cqy">
+                    <a href="/create">新增</a>
+                </div>
+            </header>
+            <nav class="nav___9wFJ-">
+                <a href="javascript:void(0);" v-on:click="view(1)" :class="{ 'active___2q-q_' : view_type==1 }">学习中</a>
+                <a href="javascript:void(0);" v-on:click="view(2)" :class="{ 'active___2q-q_' : view_type==2 }">复习中</a>
+                <a href="javascript:void(0);" v-on:click="view(3)" :class="{ 'active___2q-q_' : view_type==3 }">再回顾</a>
+            </nav>
+            <main>
                 <div>
-                    <template v-for="(value, key) in memos" v-if="value.length > 0">
-                        <template v-for="item in value">
-                            <div class="touchable___25WDv" style="display: block;">
-                                <a class="timelineItem___1y46j link___2jKS2" :href="formatUrl(item.id)" target="_self">
-                                    <h2 class="enableVisited">{{ item.title }}</h2>
-                                    <div class="summary___SGzH5">
-                                        <div class="bp-pure___3xB_W">
-                                            <div class="bp-beauty-line___3EG0Z" style="letter-spacing: 0.733333px;">
-                                                {{ item.content }}
+                    <div>
+                        <template v-for="(value, key) in memos" v-if="value.length > 0">
+                            <template v-for="item in value">
+                                <div class="touchable___25WDv" style="display: block;">
+                                    <a class="timelineItem___1y46j link___2jKS2" :href="formatUrl(item.id)"
+                                       target="_self">
+                                        <h2 class="enableVisited">{{ item.title }}</h2>
+                                        <div class="summary___SGzH5">
+                                            <div class="bp-pure___3xB_W">
+                                                <div class="bp-beauty-line___3EG0Z" style="letter-spacing: 0.733333px;">
+                                                    {{ item.content }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="meta___3CKfY">
-                                        <span>{{ item.user }} </span>
-                                        <span>/ {{ item.category }}</span>
-                                        <span>
+                                        <div class="meta___3CKfY">
+                                            <span>{{ item.user }} </span>
+                                            <span>/ {{ item.category }}</span>
+                                            <span>
                                             <i class="split___1I-N5"></i>
                                             {{formatDate(key, item.create_time)}}
                                             <i class="split___1I-N5"></i>
                                         </span>
-                                    </div>
-                                </a>
-                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </template>
+                            <div id="masking" class="masking___10CSs"></div>
                         </template>
-                        <div id="masking" class="masking___10CSs"></div>
-                    </template>
-                    <!--<div class="listButtonFix___2Thj0">
-                        <div class="loading___12UUz"><img src="/img/loading.gif"></div>
-                    </div>-->
+                        <!--<div class="listButtonFix___2Thj0">
+                            <div class="loading___12UUz"><img src="/img/loading.gif"></div>
+                        </div>-->
+                    </div>
                 </div>
-            </div>
-        </main>
-        <footer class="footer___1Bw6q">
-            <div class="copyRight___2cP8i">© 2017 Cheerme.cn</div>
-        </footer>
+            </main>
+            <footer class="footer___1Bw6q">
+                <div class="copyRight___2cP8i">© 2017 Cheerme.cn</div>
+            </footer>
+        </div>
     </div>
 </div>
 
@@ -68,18 +71,11 @@
     window.vm = new Vue({
         el: "#root",
         data: {
-            memos: {
-                m0: [],
-                m1: [],
-                m2: [],
-                m4: []
-            }
+            memos: {m0: [], m1: [], m2: [], m4: []},
+            view_type: 0
         },
         mounted: function () {
-            this.getData(0);
-            this.getData(1);
-            this.getData(2);
-            this.getData(4);
+            this.view(1);
         },
         methods: {
             getData: function (type) {
@@ -87,11 +83,32 @@
                     this.memos["m" + type] = response.data;
                 });
             },
+            getDatas: function (arr) {
+                for (var i = 0; i < arr.length; i++) {
+                    this.getData(arr[i]);
+                }
+            },
             formatUrl: function (key) {
                 return '/detail/' + key;
             },
             formatDate: function (key, create_time) {
                 return timeago().format(create_time, 'zh_CN');
+            },
+            view: function (type) {
+                if (type === this.view_type) {
+                    return;
+                }
+                this.view_type = type;
+                this.memos = {m0: [], m1: [], m2: [], m4: []};
+                var arr = [];
+                if (type === 1) {
+                    arr = [0, 1, 2];
+                } else if (type === 2) {
+                    arr = [4, 8, 16];
+                } else {
+                    arr = [32, 64, 128];
+                }
+                this.getDatas(arr);
             }
         }
     });
