@@ -24,7 +24,7 @@ public class MemoService {
 	* 列表-分页
 	*/
 	public Page<Memo> paginate(int pageNumber, int pageSize) {
-		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM memo");
+		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM memo ORDER BY create_time DESC");
 	}
 	
 	/**

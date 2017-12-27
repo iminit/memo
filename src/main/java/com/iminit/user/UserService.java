@@ -22,7 +22,7 @@ public class UserService {
 	* 列表-分页
 	*/
 	public Page<User> paginate(int pageNumber, int pageSize) {
-		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM user");
+		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM user ORDER BY create_time DESC");
 	}
 	
 	/**

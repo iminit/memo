@@ -26,6 +26,16 @@ public class UserController extends Controller {
 		renderJson(srv.paginate(getParaToInt("p", 1), 40));
 	}
 
+	public void login(){
+
+	}
+	public void reg(){
+
+	}
+	public void logout(){
+
+	}
+
 	/**
 	 * 列表
 	 * /iminit/user/list
@@ -52,7 +62,7 @@ public class UserController extends Controller {
 	@Before({UserValidator.class})
 	public void save() {
 		srv.save(getModel(User.class));
-		renderJson("isOk", true);
+		redirect("/user/");
 	}
 
 	/**

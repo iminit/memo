@@ -13,7 +13,7 @@ public class Blog extends BaseBlog<Blog> {
     public static final Blog dao = new Blog().dao();
 
     public Page<Blog> paginate(int pageNumber, int pageSize) {
-        return paginate(pageNumber, pageSize, "SELECT * ", "FROM `blog`");
+        return paginate(pageNumber, pageSize, "SELECT * ", "FROM `blog` ORDER BY create_time DESC");
     }
 
 

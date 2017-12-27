@@ -16,7 +16,7 @@ public class BlogService {
     private static final Blog dao = new Blog().dao();
 
     public Page<Blog> paginate(int pageNumber, int pageSize) {
-        return dao.paginate(pageNumber, pageSize, "select *", "FROM `blog`");
+        return dao.paginate(pageNumber, pageSize, "select *", "FROM `blog` ORDER BY create_time DESC");
     }
 
     public Blog findById(int id) {

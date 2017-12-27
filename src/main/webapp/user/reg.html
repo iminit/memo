@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>注册 - {{lay.base.name}}</title>
-{{ include ../common/link }}
-</head>
-<body>
-
-{{ include ../common/header }}
-
+#@layui_no_side()
+#define main()
 <div class="layui-container fly-marginTop">
-
   <div class="fly-panel fly-panel-user" pad20>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title">
-        <li><a href="/user/login/">登入</a></li>
+        <li><a href="/user/login">登入</a></li>
         <li class="layui-this">注册</li>
       </ul>
       <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
@@ -60,21 +49,13 @@
               <div class="layui-form-item">
                 <button class="layui-btn" lay-filter="*" lay-submit>立即注册</button>
               </div>
-              <div class="layui-form-item fly-form-app">
-                <span>或者直接使用社交账号快捷注册</span>
-                <a href="/app/qq" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq" title="QQ登入"></a>
-                <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo" title="微博登入"></a>
-              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>
-
-{{ include ../common/footer }}
-
-</body>
-</html>
+#end
+#define script()
+#end

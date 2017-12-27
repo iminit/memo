@@ -59,8 +59,9 @@ public class AppConfig extends JFinalConfig {
 	}
 	
 	public void configEngine(Engine me) {
-		me.addSharedFunction("/common/_layuiout.html");
-		me.addSharedFunction("/common/_nav.html");
+		me.addSharedFunction("/common/_layui.html");
+		me.addSharedFunction("/common/_layui_no_side.html");
+		me.addSharedFunction("/common/_header.html");
 		me.addSharedFunction("/common/_side.html");
 		me.addSharedFunction("/common/_search.html");
 		me.addSharedFunction("/common/_footer.html");

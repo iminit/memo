@@ -38,7 +38,7 @@ public class BlogController extends Controller {
     @Before(BlogValidator.class)
     public void save() {
         getModel(Blog.class).save();
-        redirect("/blog");
+        redirect("/blog/");
     }
 
     public void edit() {
@@ -52,7 +52,7 @@ public class BlogController extends Controller {
     @Before(BlogValidator.class)
     public void update() {
         getModel(Blog.class).update();
-        redirect("/blog");
+        redirect("/blog/");
     }
 
     public void delete() {

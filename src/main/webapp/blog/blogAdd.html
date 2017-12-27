@@ -1,6 +1,6 @@
 #@layui()
 #define main()
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+<fieldset class="layui-elem-field layui-field-title">
 	<legend>新增博客</legend>
 </fieldset>
 <form class="layui-form" action="/blog/save" method="post">
@@ -9,9 +9,9 @@
         <div class="layui-form-mid layui-word-aux">#(titleMsg)</div>
     </div>
     <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">内容</label>
+        <label class="layui-form-label">博客内容</label>
         <textarea class="layui-textarea" id="LAY_demo1" style="display: none" name="blog.content">
-          请输入内容
+
         </textarea>
         <div class="site-demo-button" style="margin-top: 20px;">
             <button class="layui-btn site-demo-layedit" data-type="content">获取编辑器内容</button>

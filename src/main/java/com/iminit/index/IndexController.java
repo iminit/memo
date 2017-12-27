@@ -12,7 +12,7 @@ public class IndexController extends Controller {
 		render("index.html");
 	}
 	public void admin() {
-		render("../memo/memo.html");
+		render("admin.html");
 	}
 
 	static MemoService srv = MemoService.me;
