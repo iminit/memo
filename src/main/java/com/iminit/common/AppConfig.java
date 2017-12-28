@@ -12,7 +12,6 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
-import net.dreamlu.ui.jfinal.AssetsDirective;
 
 /**
  * API引导式配置
@@ -65,8 +64,6 @@ public class AppConfig extends JFinalConfig {
 		me.addSharedFunction("/common/_side.html");
 		me.addSharedFunction("/common/_search.html");
 		me.addSharedFunction("/common/_footer.html");
-
-		me.addDirective("assets", new AssetsDirective());
 	}
 	
 	/**
