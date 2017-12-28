@@ -27,7 +27,6 @@ public class BlogController extends Controller {
     }
 
     public void add() {
-        setAttr("blog", new Blog());
         render("blogAdd.html");
     }
 

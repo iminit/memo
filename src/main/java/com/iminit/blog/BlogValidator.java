@@ -19,6 +19,7 @@ public class BlogValidator extends Validator {
 		
 		String actionKey = getActionKey();
 		if (actionKey.equals("/blog/save"))
+			// // TODO: 2017/12/28 0028 使用带参数的重定向 
 			controller.render("blogAdd.html");
 		else if (actionKey.equals("/blog/update"))
 			controller.render("blogEdit.html");

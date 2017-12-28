@@ -3,15 +3,21 @@
 <fieldset class="layui-elem-field layui-field-title">
 	<legend>新增博客</legend>
 </fieldset>
+#if(titleMsg || contentMsg || categoryMsg)
+    <blockquote class="layui-elem-quote layui-text">
+        #(titleMsg)
+        #(contentMsg)
+        #(categoryMsg)
+    </blockquote>
+#end
 <form class="layui-form" action="/blog/save" method="post">
     <div class="layui-form-item">
-        <input type="text" name="blog.title" value="#(blog.title)" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-        <div class="layui-form-mid layui-word-aux">#(titleMsg)</div>
+        <input type="text" name="blog.title" value="#(blog.title??)"  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">博客内容</label>
         <textarea class="layui-textarea" id="LAY_demo1" style="display: none" name="blog.content">
-
+            #(blog.content??)
         </textarea>
         <div class="site-demo-button" style="margin-top: 20px;">
             <button class="layui-btn site-demo-layedit" data-type="content">获取编辑器内容</button>
