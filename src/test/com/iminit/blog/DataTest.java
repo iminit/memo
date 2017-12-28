@@ -14,10 +14,10 @@ public class DataTest {
 
     public static void main(String[] args) {
         init();
-//        insertModel(new File(), "name,url,category,module,ext");
+        insertModel(new File(), "name,url,category,module,ext");
         insertModel(new User(), "username,password,nickname,sex,sign,experience,score");
-//        insertModel(new Blog(), "title,content");
-//        insertModel(new Memo(), "title,content,category,user");
+        insertModel(new Blog(), "title,content");
+        insertModel(new Memo(), "title,content,category,user");
     }
 
     private static void insertModel(Model model, String arr) {
