@@ -1,15 +1,24 @@
 package com.iminit.index;
 
 import com.iminit.common.model.Memo;
+import com.iminit.common.utils.CS;
 import com.iminit.memo.MemoService;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Record;
+
+import java.util.List;
 
 /**
  * IndexController
  */
 public class IndexController extends Controller {
     public void index() {
-        render("index.html");
+        Integer type = getParaToInt(0, CS.TYPE_1);
+        if (type > CS.TYPE_3 || type < CS.TYPE_1) {
+            type = CS.TYPE_1;
+        }
+        List<Record> data = srv.getData2(type);
+        setAttr("memos", data);
     }
 
     public void admin() {
