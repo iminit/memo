@@ -1,6 +1,8 @@
 #@layui()
 #define main()
 <div class="layui-btn-group demoTable">
+	<button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传导入</button>
+	<a class="layui-btn" href="/memo/exportExcel" data-type="download"><i class="layui-icon">&#xe60a;</i>下载表格</a>
 	<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
 	<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
 	<button class="layui-btn" data-type="isAll">验证是否全选</button>
@@ -32,8 +34,10 @@
 
 #define script()
 <script>
-	layui.use('table', function(){
-		var table = layui.table;
+	layui.use(['table','upload','layer'], function(){
+		var table = layui.table,
+				upload = layui.upload,
+				layer = layui.layer;
 		//监听表格复选框选择
 		table.on('checkbox(demo)', function(obj){
 			console.log(obj)
@@ -54,6 +58,9 @@
 		});
 
 		var $ = layui.$, active = {
+			download: function(){ // 下载表格
+				location.href = "/exportExcel"
+			},
 			getCheckData: function(){ //获取选中数据
 				var checkStatus = table.checkStatus('idTest')
 						,data = checkStatus.data;
@@ -73,6 +80,17 @@
 		$('.demoTable .layui-btn').on('click', function(){
 			var type = $(this).data('type');
 			active[type] ? active[type].call(this) : '';
+		});
+
+		upload.render({
+			elem: '#test3'
+			,url: '/importExcel'
+			,accept: 'file' //普通文件
+			,exts: 'xls' //只允许上传压缩文件
+			,done: function(res){
+				layer.alert(res)
+				console.log(res)
+			}
 		});
 	});
 </script>

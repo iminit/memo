@@ -26,13 +26,7 @@ public class FileController extends Controller {
 
     public void upload() {
         UploadFile uplad = getFile();
-        File file = new File();
-        file.setName(uplad.getFileName())
-                .setUrl(uplad.getUploadPath()+uplad.getFileName())
-                .setCategory("param")
-                .setModule("param")
-                .setExt(uplad.getContentType());
-        srv.save(file);
+        File file = srv.saveUploadFile(uplad);
         renderJson(Format.layuiFile(file, this));
     }
 

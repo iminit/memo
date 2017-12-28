@@ -2,10 +2,15 @@ package com.iminit.memo;
 
 import com.iminit.common.model.Memo;
 import com.iminit.common.utils.Format;
+import com.iminit.common.utils.poi.PoiRender;
+import com.iminit.file.FileService;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.log.Log;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
+
+import java.util.List;
 
 /**
  * Memo 管理
@@ -16,6 +21,7 @@ public class MemoController extends Controller {
     private static final Log log = Log.getLog(MemoController.class);
 
     static MemoService srv = MemoService.me;
+    static FileService fileSrv = FileService.me;
 
     public void index() {
         render("memo.html");
@@ -88,6 +94,20 @@ public class MemoController extends Controller {
     public void delete() {
         srv.delete(getParaToInt("id"));
         renderJson("isOk", true);
+    }
+
+    public void importExcel() {
+        UploadFile uplad = getFile();
+        fileSrv.saveUploadFile(uplad);
+        renderJson(srv.importData(uplad));
+    }
+
+    public void exportExcel() {
+        String[] header = {"节次/周", "一", "二", "三", "四", "五", "五"};
+        String[] columns = {"id", "title", "content", "category", "user", "create_time", "update_time"};
+        String fileName = "memo";
+        List<Memo> objs = objs = Memo.dao.find("select * from memo");
+        render(PoiRender.me(objs).fileName(fileName + ".xls").headers(header).columns(columns).cellWidth(5000).headerRow(1));
     }
 
 }

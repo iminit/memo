@@ -3,6 +3,9 @@ package com.iminit.file;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.iminit.common.model.File;
+import com.jfinal.upload.UploadFile;
+
+import static com.iminit.file.FileController.srv;
 
 /**
  * File 管理	
@@ -50,6 +53,16 @@ public class FileService {
 	public void delete(int fileId) {
 		Db.update("delete from file where id=?", fileId);
 	}
-	
-	
+
+
+	public File saveUploadFile(UploadFile uplad) {
+		File file = new File();
+		file.setName(uplad.getFileName())
+				.setUrl(uplad.getUploadPath()+uplad.getFileName())
+				.setCategory("param")
+				.setModule("param")
+				.setExt(uplad.getContentType());
+		srv.save(file);
+		return file;
+	}
 }
