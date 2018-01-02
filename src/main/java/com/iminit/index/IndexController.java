@@ -21,6 +21,9 @@ public class IndexController extends Controller {
         setAttr("memos", data);
     }
 
+    public void test(){
+        render("test.html");
+    }
     public void admin() {
         render("admin.html");
     }

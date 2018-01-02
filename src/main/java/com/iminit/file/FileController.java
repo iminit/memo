@@ -34,6 +34,26 @@ public class FileController extends Controller {
      * 列表
      * /iminit/file/list
      */
+    public void img() {
+        render("img.html");
+    }
+
+    /**
+     * 列表
+     * /iminit/file/list
+     */
+    public void imglist() {
+        Integer page = getParaToInt("page", 1);
+        Integer limit = getParaToInt("limit", 10);
+        Page<File> paginate = srv.paginateImg(page, limit);
+        renderJson(Format.layuiPage(paginate));
+    }
+
+
+    /**
+     * 列表
+     * /iminit/file/list
+     */
     public void index() {
         render("file.html");
     }

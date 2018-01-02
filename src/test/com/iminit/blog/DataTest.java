@@ -15,21 +15,23 @@ public class DataTest {
     public static void main(String[] args) {
         init();
         insertModel(new File(), "name,url,category,module,ext");
-        insertModel(new User(), "username,password,nickname,sex,sign,experience,score");
-        insertModel(new Blog(), "title,content");
-        insertModel(new Memo(), "title,content,category,user");
+//        insertModel(new User(), "username,password,nickname,sex,sign,experience,score");
+//        insertModel(new Blog(), "title,content");
+//        insertModel(new Memo(), "title,content,category,user");
     }
 
     private static void insertModel(Model model, String arr) {
         String[] params = arr.split(",");
         String param;
-        int times = 30;
+        int times = 300;
         for (int i = 1; i <= times; i++) {
             model.set("id", null);
             for (int j = 0; j < params.length; j++) {
                 param = params[j];
                 model.set(param, param + i);
             }
+            model.set("name", "TIM截图20180102164755.png");
+            model.set("type", "img");
             model.save();
         }
     }

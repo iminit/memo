@@ -22,6 +22,12 @@ public class FileService {
 	/**
 	* 列表-分页
 	*/
+	public Page<File> paginateImg(int pageNumber, int pageSize) {
+		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM file  WHERE type = 'img' ORDER BY create_time DESC");
+	}
+	/**
+	* 列表-分页
+	*/
 	public Page<File> paginate(int pageNumber, int pageSize) {
 		return dao.paginate(pageNumber, pageSize, "SELECT * ", "FROM file ORDER BY create_time DESC");
 	}
