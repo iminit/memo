@@ -6,8 +6,8 @@ import java.util.List;
 public class _TppGenerator {
 
     public static void main(String[] args) {
-        String className = "File";
-        String tableName = "file";
+        String tableName = "word";
+        String className = tableName.substring(0,1).toUpperCase()+tableName.substring(1,tableName.length());
 
         JfGenerator.me
                 .setSrcFolder("src/main/java")

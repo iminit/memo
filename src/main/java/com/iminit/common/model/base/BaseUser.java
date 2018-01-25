@@ -81,4 +81,22 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 		return getStr("score");
 	}
 
+	public M setCreateTime(java.util.Date createTime) {
+		set("create_time", createTime);
+		return (M)this;
+	}
+
+	public java.util.Date getCreateTime() {
+		return get("create_time");
+	}
+
+	public M setUpdateTime(java.util.Date updateTime) {
+		set("update_time", updateTime);
+		return (M)this;
+	}
+
+	public java.util.Date getUpdateTime() {
+		return get("update_time");
+	}
+
 }

@@ -59,8 +59,7 @@
                     <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">数字</label></div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入一个数字"
-                                   v-model="inputNum"/>
+                            <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入一个数字" v-model="inputNum"/>
                         </div>
                     </div>
                     <div class="img">
@@ -72,28 +71,43 @@
             </div>
             <div class="weui-tab__content">
                 <div class=weui-cells__title>设置组词数量</div>
-                <div class="weui-cells weui-cells_checkbox">
-                    <label class="weui-cell weui-check__label" for=c1>
-                        <div class=weui-cell__hd>
-                            <input type=checkbox name=assistance class=weui-check id=c1>
-                            <i class=weui-icon-checked></i>
-                        </div>
-                        <div class=weui-cell__bd>2</div>
+                <div class="weui-cells weui-cells_radio">
+                    <label class="weui-cell weui-check__label" for="x11">
+                        <div class="weui-cell__bd"><p>2</p></div>
+                        <div class="weui-cell__ft"><input type="radio" class="weui-check" name="radio1" id="x11" :checked="{checked:SettingCount===2}"/><span class="weui-icon-checked"></span></div>
                     </label>
-                    <label class="weui-cell weui-check__label" for=c2>
-                        <div class=weui-cell__hd>
-                            <input type=checkbox name=assistance class=weui-check id=c2>
-                            <i class=weui-icon-checked></i>
+                    <label class="weui-cell weui-check__label" for="x12">
+                        <div class="weui-cell__bd"><p>3</p></div>
+                        <div class="weui-cell__ft"><input type="radio" name="radio1" class="weui-check" id="x12" :checked="{checked:SettingCount===3}"/><span class="weui-icon-checked"></span>
                         </div>
-                        <div class=weui-cell__bd>3</div>
                     </label>
-                    <label class="weui-cell weui-check__label" for=c3>
-                        <div class=weui-cell__hd>
-                            <input type=checkbox name=assistance class=weui-check id=c3>
-                            <i class=weui-icon-checked></i>
+                    <label class="weui-cell weui-check__label" for="x13">
+                        <div class="weui-cell__bd"><p>4</p></div>
+                        <div class="weui-cell__ft"><input type="radio" name="radio1" class="weui-check" id="x13" :checked="{checked:SettingCount===4}"/><span class="weui-icon-checked"></span>
                         </div>
-                        <div class=weui-cell__bd>4</div>
                     </label>
+                </div>
+
+                <div class=weui-cells__title>开关组</div>
+                <div class="weui-cells weui-cells_radio">
+                    <div class="weui-cell weui-cell_switch">
+                        <div class="weui-cell__bd">图片/文字</div>
+                        <div class="weui-cell__ft">
+                            <input class="weui-switch" type="checkbox" :checked="{checked:SettingIsPic}"/>
+                        </div>
+                    </div>
+                    <div class="weui-cell weui-cell_switch">
+                        <div class="weui-cell__bd">一直显示图片</div>
+                        <div class="weui-cell__ft">
+                            <input class="weui-switch" type="checkbox" checked=""/>
+                        </div>
+                    </div>
+                    <div class="weui-cell weui-cell_switch">
+                        <div class="weui-cell__bd">显示提示按钮</div>
+                        <div class="weui-cell__ft">
+                            <input class="weui-switch" type="checkbox"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,7 +127,11 @@
             isShow: false,
             num1: '11',
             num2: '12',
-            inputNum: ""
+            inputNum: Math.ceil(Math.random()*10000000),
+            SettingCount: 3,
+            SettingIsPic: true,
+            SettingAlwaysPic: false,
+            SettingHitBtn: false
         },
         methods: {
             test: function (inputNum) {
@@ -158,9 +176,6 @@
             getNext2Num: function () {
                 this.num1 = this._random();
                 this.num2 = this._random();
-            },
-            inputNumImgs: function () {
-                return "2134";
             }
         },
         computed: {
@@ -177,6 +192,60 @@
                 }
                 return ret;
             }
+        },
+        beforeCreate: function () {
+            console.group('beforeCreate 创建前状态===============》');
+            console.log("%c%s", "color:red" , "el     : " + this.$el); //undefined
+            console.log("%c%s", "color:red","data   : " + this.$data); //undefined
+            console.log("%c%s", "color:red","message: " + this.message)
+        },
+        created: function () {
+            console.group('created 创建完毕状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el); //undefined
+            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
+            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
+        },
+        beforeMount: function () {
+            console.group('beforeMount 挂载前状态===============》');
+            console.log("%c%s", "color:red","el     : " + (this.$el)); //已被初始化
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
+            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
+        },
+        mounted: function () {
+            console.group('mounted 挂载结束状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el); //已被初始化
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
+            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
+        },
+        beforeUpdate: function () {
+            console.group('beforeUpdate 更新前状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el);
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data);
+            console.log("%c%s", "color:red","message: " + this.message);
+        },
+        updated: function () {
+            console.group('updated 更新完成状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el);
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data);
+            console.log("%c%s", "color:red","message: " + this.message);
+        },
+        beforeDestroy: function () {
+            console.group('beforeDestroy 销毁前状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el);
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data);
+            console.log("%c%s", "color:red","message: " + this.message);
+        },
+        destroyed: function () {
+            console.group('destroyed 销毁完成状态===============》');
+            console.log("%c%s", "color:red","el     : " + this.$el);
+            console.log(this.$el);
+            console.log("%c%s", "color:red","data   : " + this.$data);
+            console.log("%c%s", "color:red","message: " + this.message)
         }
     })
     var tabIndex = localStorage.getItem("tabIndex");
