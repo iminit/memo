@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <link href="/css/weui.min.css" rel="stylesheet">
+    <!--<link href="/css/main.css" rel="stylesheet">-->
+    <script src="/js/vue.js"></script>
+    <script src="/js/vue-resource.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <div class="history-num">
+        <span v-for="item,index in history" @click="showImg(item)">
+            {{ (index%10 === 0) ? item : item+'<br>' }}
+        </span>
+    </div>
+
+    <div class="header" style="display: block;">
+        <h1 @click="getNextNum()">{{ num }}</h1>
+        <span @click="showTip()">提示</span>
+        <div class="img" v-if="isShow">
+            <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
+        </div>
+    </div>
+</div>
+<script>
+
+    var currNum = 0;
+    var historyCache = [];
+    var app = new Vue({
+        el: '#app',
+        data: {
+            num: '100',
+            history: [],
+            isShow: false
+        },
+        methods: {
+            getNextNum: function () {
+                if(this.isShow) {this.isShow = false;}
+                currNum = Math.floor(Math.random() * 100);
+                this.history = historyCache;
+                /*if(this.contain(currNum)){
+                    currNum = this.getNextNum();
+                }*/
+                historyCache.unshift(currNum);
+                this.num = currNum;
+            },
+            showImg: function (item) {
+                this.num = item;
+                this.isShow = true;
+            },
+            showTip: function () {
+                this.isShow = !this.isShow;
+            },
+            contain: function (num) {
+                for(var i = 0;i < this.history.length; i ++){
+                    if (num === this.history[i]){
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+    })
+</script>
+</body>
+</html>

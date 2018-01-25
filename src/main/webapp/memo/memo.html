@@ -84,12 +84,16 @@
 
 		upload.render({
 			elem: '#test3'
-			,url: '/importExcel'
+			,url: '/memo/importExcel'
 			,accept: 'file' //普通文件
 			,exts: 'xls' //只允许上传压缩文件
 			,done: function(res){
-				layer.alert(res)
 				console.log(res)
+				if(res.error){
+					layer.alert(res.error)
+				} else{
+					layer.alert("success:"+res.success+"lost:"+res.lost+"count:"+res.count);
+				}
 			}
 		});
 	});
