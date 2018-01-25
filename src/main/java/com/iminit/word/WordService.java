@@ -1,8 +1,8 @@
 package com.iminit.word;
 
+import com.iminit.common.model.Word;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
-import com.iminit.common.model.Word;
 
 import java.util.List;
 
@@ -59,4 +59,5 @@ public class WordService {
 				"WHERE id >= (( SELECT MAX(id) FROM word ) - ( SELECT MIN(id) FROM word )) * RAND() + ( SELECT MIN(id) FROM word ) LIMIT ?", n);
 		return words;
 	}
+
 }

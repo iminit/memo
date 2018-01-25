@@ -14,6 +14,17 @@
         </div>
         <div class="weui-tab__panel">
             <div class="weui-tab__content">
+                <div class="weui-cells__title">
+                    <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="submitSentence()">提交答案</a>
+                </div>
+                <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" type="text" placeholder="请输入本题您的答案" v-model="inputWordSentence"/>
+                        </div>
+                    </div>
+                </div>
+
                 <div class=weui-cells__title></div>
                 <div class="header" style="display: block;">
                     <template v-for="word in words">
@@ -25,7 +36,9 @@
                 <div class=weui-cells__title>设置</div>
                 <div class="weui-cells weui-cells_form">
                     <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">组词数量</label></div>
+                        <div class="weui-cell__hd">
+                            <label class="weui-label">组词数量</label>
+                        </div>
                         <div class="weui-cell__bd">
                             <input class="weui-input" type="number" pattern="[0-9]{1}" placeholder="请输入一个数字" v-model="wordCount"/>
                         </div>
@@ -42,7 +55,10 @@
         el: '#app',
         data: {
             words: [],
-            wordCount: 2
+            wordCount: 2,
+            inputWordSentence: "",
+            wordIds: ""
+
         },
         mounted: function () {
             this.loadData();
@@ -52,10 +68,22 @@
                 this.$http.get("/numemo/words/"+this.wordCount).then(function (response) {
                     var res = response.data;
                     this.words = res;
+                    var words = "";
+                    res.forEach(function (item,index,input) {
+                        words = words + (index === 0 ? item.id : "-"+item.id);
+                    });
+                    this.wordIds = words;
+                    console.log(words)
                 });
             },
             getNextWords: function () {
                 this.loadData();
+            },
+            submitSentence: function () {
+                this.$http.post("/numemo/wordsSentenceSave?wordIds="+this.wordIds+"&content="+this.inputWordSentence).then(function (response) {
+                    var res = response.data;
+                    weui.alert('普通的alert');
+                });
             }
         }
     })
