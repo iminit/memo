@@ -32,6 +32,11 @@
                     <a href="javascript:;" @click="getNextNum()" class="weui-btn weui-btn_default"
                        style="font-size: 64px">{{ num }}</a>
                     <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn">提示</a>
+                    <label for="switchCP" class="weui-switch-cp">
+                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"/>
+                        <div class="weui-switch-cp__box"></div>
+                    </label>
+
                     <div class="img" v-if="isShow">
                         <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
                     </div>
@@ -60,7 +65,7 @@
                     </div>
                     <div class="img">
                         <template v-if="inputImgs.length>0" v-for="imgNo in inputImgs">
-                            <img :src="'/img/numemo/picc-'+imgNo+'.jpg'" :alt="imgNo">
+                            <img :src="'/img/numemo/pic-'+imgNo+'.jpg'" :alt="imgNo">
                         </template>
                     </div>
                 </div>
@@ -104,6 +109,7 @@
         data: {
             num: '100',
             history: [],
+            alwayShow: false,
             isShow: false,
             num1: '11',
             num2: '12',
@@ -159,7 +165,6 @@
         },
         computed: {
             inputImgs: function () {
-                console.log("-----begin------");
                 var ret = [];
                 var input = this.inputNum;
                 if (input === "") {
@@ -167,17 +172,18 @@
                 }
                 for (var i = 0, j = 0; i < input.length; i = i + 2, j++) {
                     var end = input.length < i + 2 ? input.length : i + 2;
-                    console.log("start="+i+",end="+end);
-                    ret[j] = input.substr(i, end);
+                    //console.log("'%s'.substring(%d, %d)=%s", input, i, end, input.substring(i, end));
+                    ret[j] = input.substring(i, end);
                 }
                 return ret;
             }
         }
     })
+    var tabIndex = localStorage.getItem("tabIndex");
     weui.tab('#tab', {
-        defaultIndex: 2,
+        defaultIndex: tabIndex ? tabIndex : 0,
         onChange: function (index) {
-            console.log(index);
+            localStorage.setItem("tabIndex", index);
         }
     });
 
