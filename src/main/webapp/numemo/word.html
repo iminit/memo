@@ -13,6 +13,7 @@
     <div class="weui-tab" id="tab">
         <div class="weui-navbar">
             <div class="weui-navbar__item">组词</div>
+            <div class="weui-navbar__item">案例</div>
             <div class="weui-navbar__item">设置</div>
         </div>
         <div class="weui-tab__panel">
@@ -36,6 +37,14 @@
                 </div>
             </div>
             <div class="weui-tab__content">
+                <div class="weui-cells" v-for="item in wordSentences">
+                    <a class="weui-cell weui-cell_access" href="javascript:;">
+                        <div class="weui-cell__bd"><p>{{item.content}}</p></div>
+                        <div class="weui-cell__ft"></div>
+                    </a>
+                </div>
+            </div>
+            <div class="weui-tab__content">
                 <div class=weui-cells__title>设置</div>
                 <div class="weui-cells weui-cells_form">
                     <div class="weui-cell">
@@ -44,6 +53,18 @@
                         </div>
                         <div class="weui-cell__bd">
                             <input class="weui-input" type="number" pattern="[0-9]{1}" placeholder="请输入一个数字" v-model="wordCount"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weui-cells__title">
+                    <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="submitWords()">批量添加词汇</a>
+                </div>
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea" placeholder="请输入文本，用'空格'、'逗号'、'换行'、'、'分开" rows="3" v-model="inputWords"></textarea>
+                            <div class="weui-textarea-counter"><span>0</span>/200</div>
                         </div>
                     </div>
                 </div>
@@ -75,12 +96,26 @@
         data: {
             words: [],
             wordCount: 2,
-            inputWordSentence: "",
-            wordIds: ""
-
+            wordSentences: [], // 后端获取的句子数据，用于展示
+            inputWordSentence: "", // 组词页面，用户提交的答案
+            wordIds: "", // 组词页面，用于提交答案和句子关联
+            inputWords: "", // 设置页面，用户批量添加的词语
         },
         mounted: function () {
-            this.loadData();
+            var that = this;
+            var tabIndex = localStorage.getItem("wordTabIndex");
+            if(tabIndex){
+                tabIndex = parseInt(tabIndex)
+            }
+            this.onTabChange(that,tabIndex);
+            weui.tab('#tab', {
+                defaultIndex: tabIndex ? tabIndex : 0,
+                onChange: function (index) {
+                    localStorage.setItem("wordTabIndex", index);
+                    // todo 通过watch将用户的参数保存下来
+                    that.onTabChange(that, index);
+                }
+            });
         },
         methods: {
             loadData: function () {
@@ -93,6 +128,19 @@
                     });
                     this.wordIds = words;
                     console.log(words)
+                });
+            },
+            onTabChange: function (that,tabIndex) {
+                switch (tabIndex) {
+                    case 0: this.loadData(); break;
+                    case 1 : that.loadWordsSentenceList(); break;
+                    default: ;
+                }
+            },
+            loadWordsSentenceList: function () {
+                this.$http.get("/numemo/wordsSentenceList/").then(function (response) {
+                    var res = response.data;
+                    this.wordSentences = res;
                 });
             },
             getNextWords: function () {
@@ -109,14 +157,19 @@
                         this.getNextWords();
                     }
                 });
+            },
+            submitWords: function () {
+                this.$http.post("/numemo/wordsSave/"+this.inputWords).then(function (response) {
+                    var res = response.data;
+                    if(res.error){
+                        weui.alert(res.error);
+                    } else {
+                        weui.alert('操作成功');
+                        this.inputWordSentence = "";
+                        this.getNextWords();
+                    }
+                });
             }
-        }
-    })
-    var tabIndex = localStorage.getItem("wordTabIndex");
-    weui.tab('#tab', {
-        defaultIndex: tabIndex ? tabIndex : 0,
-        onChange: function (index) {
-            localStorage.setItem("wordTabIndex", index);
         }
     });
 

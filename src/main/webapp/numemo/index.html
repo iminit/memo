@@ -19,30 +19,26 @@
         </div>
         <div class="weui-tab__panel">
             <div class="weui-tab__content">
-                已学习：
-                <div class="history-num">
-                    <span v-for="item,index in history" @click="showImg(item)">
-                        <template v-if="(index+1)%10===0">
-                            <br>{{item}}
-                        </template>
-                        <template v-else>
-                            {{item}}
-                        </template>
-                    </span>
-                </div>
 
                 <div class="header" style="display: block;">
                     <a href="javascript:;" @click="getNextNum()" class="weui-btn weui-btn_default"
                        style="font-size: 64px">{{ num }}</a>
                     <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn">提示</a>
                     <label for="switchCP" class="weui-switch-cp">
-                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"/>
+                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" v-model:checked="alwayShow"/>
                         <div class="weui-switch-cp__box"></div>
                     </label>
 
                     <div class="img" v-if="isShow">
                         <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
                     </div>
+                </div>
+                已学习：
+                <div class="history-num">
+                    <template v-for="item,index in history">
+                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="showImg(item)">{{item}}</a>
+                        <template v-if="(index+1)%10===0"><br></template>
+                    </template>
                 </div>
             </div>
             <div class="weui-tab__content">
@@ -210,60 +206,6 @@
                 }
                 return ret;
             }
-        },
-        beforeCreate: function () {
-            console.group('beforeCreate 创建前状态===============》');
-            console.log("%c%s", "color:red" , "el     : " + this.$el); //undefined
-            console.log("%c%s", "color:red","data   : " + this.$data); //undefined
-            console.log("%c%s", "color:red","message: " + this.message)
-        },
-        created: function () {
-            console.group('created 创建完毕状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el); //undefined
-            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
-            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
-        },
-        beforeMount: function () {
-            console.group('beforeMount 挂载前状态===============》');
-            console.log("%c%s", "color:red","el     : " + (this.$el)); //已被初始化
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
-            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
-        },
-        mounted: function () {
-            console.group('mounted 挂载结束状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el); //已被初始化
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
-            console.log("%c%s", "color:red","message: " + this.message); //已被初始化
-        },
-        beforeUpdate: function () {
-            console.group('beforeUpdate 更新前状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el);
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data);
-            console.log("%c%s", "color:red","message: " + this.message);
-        },
-        updated: function () {
-            console.group('updated 更新完成状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el);
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data);
-            console.log("%c%s", "color:red","message: " + this.message);
-        },
-        beforeDestroy: function () {
-            console.group('beforeDestroy 销毁前状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el);
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data);
-            console.log("%c%s", "color:red","message: " + this.message);
-        },
-        destroyed: function () {
-            console.group('destroyed 销毁完成状态===============》');
-            console.log("%c%s", "color:red","el     : " + this.$el);
-            console.log(this.$el);
-            console.log("%c%s", "color:red","data   : " + this.$data);
-            console.log("%c%s", "color:red","message: " + this.message)
         }
     })
     var tabIndex = localStorage.getItem("tabIndex");
