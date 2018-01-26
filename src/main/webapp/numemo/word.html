@@ -7,7 +7,7 @@
     <script src="/js/weui.min.js"></script>
     <script src="/js/vue2.min.js"></script>
     <script src="/js/vue-resource.min.js"></script>
-    <script src="/js/underscore-min.js"></script>
+    <script src="/js/underscore.js"></script>
 </head>
 <body>
 <div id="app">
@@ -67,12 +67,12 @@
             <div class="weui-tab__content">
                 <div class=weui-cells__title>设置</div>
                 <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell">
+                    <div class="weui-cell" @click="wordPicker()" >
                         <div class="weui-cell__hd">
-                            <label class="weui-label">组词数量</label>
+                            <label class="weui-label">词语数量</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" type="number" pattern="[0-9]{1}" placeholder="请输入一个数字" v-model="wordCount"/>
+                            <input class="weui-input" id="wordCountPicker" v-model="wordCount">
                         </div>
                     </div>
                 </div>
@@ -124,6 +124,9 @@
         },
         mounted: function () {
             var that = this;
+            var wordCount = localStorage.getItem("wordCount");
+            this.wordCount = wordCount ? 2 : parseInt(wordCount);
+
             var tabIndex = localStorage.getItem("wordTabIndex");
             if(tabIndex){
                 tabIndex = parseInt(tabIndex)
@@ -194,11 +197,31 @@
             },
             searchCancel: function () {
                 this.searchKey = "";
+            },
+            searchAction: _.debounce(function () {
+                setTimeout(function () {
+                    this.loadWordsSentenceList()
+                }.bind(this), 500)
+            }, 250),
+            wordPicker: function () {
+                var that = this;
+                weui.picker([{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4},{label:'5',value:5}], {
+                    className: 'custom-classname',
+                    container: 'body',
+                    defaultValue: [2],
+                    onChange: function (result) {
+                        that.wordCount = result[0].value;
+                    },
+                    onConfirm: function (result) {
+                        localStorage.setItem("wordCount",result[0].value);
+                    },
+                    id: 'wordCountPicker'
+                });
             }
         },
         watch: {
-            searchKey: function (newKey, oldKey) {
-                _.debounce(this.loadWordsSentenceList(), 1000);
+            searchKey: function () {
+                this.searchAction();
             }
         },
     });

@@ -84,12 +84,17 @@ public class NumemoController extends Controller {
         if (StrKit.isBlank(word)) {
             renderJson(WordSentence.dao.find());
         } else {
-            String[] ids = wordService.getIdByWord(word);
-            if(ids.length > 0){
-                renderJson(WordSentence.dao.wordsSentenceList(ids[0]));
-            } else {
-                renderJson("[]");
+            try {
+                word = URLDecoder.decode(word, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+            String[] ids = wordService.getIdByWord(word);
+            String id = "";
+            if(ids.length> 0){
+                id = ids[0];
+            }
+            renderJson(WordSentence.dao.wordsSentenceList(id, word));
         }
     }
 }

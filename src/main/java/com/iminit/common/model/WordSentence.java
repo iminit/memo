@@ -2,6 +2,7 @@ package com.iminit.common.model;
 
 import com.iminit.common.model.base.BaseWordSentence;
 import com.iminit.word.WordService;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
@@ -18,9 +19,13 @@ public class WordSentence extends BaseWordSentence<WordSentence> {
     public static final WordSentence dao = new WordSentence().dao();
     WordService wordService = WordService.me;
 
-    public List<Record> wordsSentenceList(String id) {
-        List<Record> records = Db.find("SELECT * FROM word_sentence WHERE wordIds LIKE CONCAT('%',?,'%')", id);
-
+    public List<Record> wordsSentenceList(String id, String content) {
+        List<Record> records;
+        if(StrKit.isBlank(id)){
+            records = Db.find("SELECT * FROM word_sentence WHERE content LIKE CONCAT('%',?,'%')", content);
+        } else {
+            records = Db.find("SELECT * FROM word_sentence WHERE wordIds LIKE CONCAT('%',?,'%')", id);
+        }
         formatWordsId(records);
         return records;
     }
