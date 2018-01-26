@@ -80,11 +80,16 @@ public class NumemoController extends Controller {
      * 历史组词记录
      */
     public void wordsSentenceList() {
-        String wordIds = getPara();
-        if (StrKit.isBlank(wordIds)) {
-            renderJson(WordSentence.dao.find("select * from word_sentence"));
+        String word = getPara();
+        if (StrKit.isBlank(word)) {
+            renderJson(WordSentence.dao.find());
         } else {
-            renderJson(WordSentence.dao.wordsSentenceList(wordIds));
+            String[] ids = wordService.getIdByWord(word);
+            if(ids.length > 0){
+                renderJson(WordSentence.dao.wordsSentenceList(ids[0]));
+            } else {
+                renderJson("[]");
+            }
         }
     }
 }

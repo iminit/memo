@@ -86,4 +86,17 @@ public class WordService {
         String s = "【词语去重】:" + b + ",输入个数:" + size + ",输出个数:" + wordList.size();
         System.out.println(s);
     }
+
+    public List<Record> find() {
+        return Db.find("select * from word");
+    }
+
+    public String[] getIdByWord(String word) {
+        List<Record> records = Db.find("SELECT id,content FROM `word` WHERE content LIKE CONCAT('%',?,'%')", word);
+        String[] ids = new String[records.size()];
+        for (int i = 0; i < records.size(); i++) {
+            ids[i] = records.get(i).get("id");
+        }
+        return ids;
+    }
 }

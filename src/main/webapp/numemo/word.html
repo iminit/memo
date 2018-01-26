@@ -5,8 +5,9 @@
     <title>组词</title>
     <link href="/css/weui.min.css" rel="stylesheet">
     <script src="/js/weui.min.js"></script>
-    <script src="/js/vue.js"></script>
+    <script src="/js/vue2.min.js"></script>
     <script src="/js/vue-resource.min.js"></script>
+    <script src="/js/underscore-min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -37,12 +38,31 @@
                 </div>
             </div>
             <div class="weui-tab__content">
-                <div class="weui-cells" v-for="item in wordSentences">
-                    <a class="weui-cell weui-cell_access" href="javascript:;">
-                        <div class="weui-cell__bd"><p>{{item.content}}</p></div>
-                        <div class="weui-cell__ft"></div>
-                    </a>
+                <div class="weui-search-bar" id="searchBar">
+                    <form class="weui-search-bar__form">
+                        <div class="weui-search-bar__box">
+                            <i class="weui-icon-search"></i>
+                            <input type="search" class="weui-search-bar__input" placeholder="搜索" required="" v-model="searchKey">
+                            <a href="javascript:" class="weui-icon-clear" @click="searchCancel()"></a>
+                        </div>
+                        <label class="weui-search-bar__label">
+                            <i class="weui-icon-search"></i>
+                            <span>搜索</span>
+                        </label>
+                    </form>
+                    <a href="javascript:" class="weui-search-bar__cancel-btn" @click="searchCancel()">取消</a>
                 </div>
+                <template v-for="item in wordSentences">
+                    <div class="weui-cells__title">{{item.wordIds}}</div>
+                    <div class="weui-cells">
+                        <a class="weui-cell weui-cell_access"  href="javascript:;">
+                            <div class="weui-cell__bd">
+                                <p>{{item.content}}</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                </template>
             </div>
             <div class="weui-tab__content">
                 <div class=weui-cells__title>设置</div>
@@ -100,6 +120,7 @@
             inputWordSentence: "", // 组词页面，用户提交的答案
             wordIds: "", // 组词页面，用于提交答案和句子关联
             inputWords: "", // 设置页面，用户批量添加的词语
+            searchKey: "",
         },
         mounted: function () {
             var that = this;
@@ -116,6 +137,7 @@
                     that.onTabChange(that, index);
                 }
             });
+            weui.searchBar('#searchBar');
         },
         methods: {
             loadData: function () {
@@ -138,7 +160,7 @@
                 }
             },
             loadWordsSentenceList: function () {
-                this.$http.get("/numemo/wordsSentenceList/").then(function (response) {
+                this.$http.get("/numemo/wordsSentenceList/"+this.searchKey).then(function (response) {
                     var res = response.data;
                     this.wordSentences = res;
                 });
@@ -169,8 +191,16 @@
                         this.getNextWords();
                     }
                 });
+            },
+            searchCancel: function () {
+                this.searchKey = "";
             }
-        }
+        },
+        watch: {
+            searchKey: function (newKey, oldKey) {
+                _.debounce(this.loadWordsSentenceList(), 1000);
+            }
+        },
     });
 
 </script>
