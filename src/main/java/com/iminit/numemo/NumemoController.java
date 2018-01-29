@@ -18,6 +18,7 @@ public class NumemoController extends Controller {
     private static final Log log = Log.getLog(NumemoController.class);
 
     static WordService wordService = WordService.me;
+    static WordSentence wordSentenceDao = WordSentence.dao;
 
     public void index() {
     }
@@ -82,7 +83,7 @@ public class NumemoController extends Controller {
     public void wordsSentenceList() {
         String word = getPara();
         if (StrKit.isBlank(word)) {
-            renderJson(WordSentence.dao.find());
+            renderJson(wordSentenceDao.find());
         } else {
             try {
                 word = URLDecoder.decode(word, "UTF-8");
@@ -94,7 +95,7 @@ public class NumemoController extends Controller {
             if(ids.length> 0){
                 id = ids[0];
             }
-            renderJson(WordSentence.dao.wordsSentenceList(id, word));
+            renderJson(wordSentenceDao.wordsSentenceList(id, word));
         }
     }
 }

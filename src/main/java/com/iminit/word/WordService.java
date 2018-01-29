@@ -88,7 +88,7 @@ public class WordService {
     }
 
     public List<Record> find() {
-        return Db.find("select * from word");
+        return Db.find("select id,content from word");
     }
 
     public String[] getIdByWord(String word) {

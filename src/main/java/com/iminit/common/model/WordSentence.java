@@ -22,16 +22,16 @@ public class WordSentence extends BaseWordSentence<WordSentence> {
     public List<Record> wordsSentenceList(String id, String content) {
         List<Record> records;
         if(StrKit.isBlank(id)){
-            records = Db.find("SELECT * FROM word_sentence WHERE content LIKE CONCAT('%',?,'%')", content);
+            records = Db.find("SELECT id,content,wordIds FROM word_sentence WHERE content LIKE CONCAT('%',?,'%') ORDER BY create_time DESC", content);
         } else {
-            records = Db.find("SELECT * FROM word_sentence WHERE wordIds LIKE CONCAT('%',?,'%')", id);
+            records = Db.find("SELECT id,content,wordIds FROM word_sentence WHERE wordIds LIKE CONCAT('%',?,'%') ORDER BY create_time DESC", id);
         }
         formatWordsId(records);
         return records;
     }
 
     public List<Record> find() {
-        List<Record> records = Db.find("select * from word_sentence");
+        List<Record> records = Db.find("select id,content,wordIds from word_sentence ORDER BY create_time DESC");
         formatWordsId(records);
         return records;
     }
@@ -43,7 +43,7 @@ public class WordSentence extends BaseWordSentence<WordSentence> {
     private void formatWordsId(List<Record> records) {
         List<Record> wordList = wordService.find();
         Map<String, Record> wordMap = new HashMap();
-        for (int i = 0; i < records.size(); i++) {
+        for (int i = 0; i < wordList.size(); i++) {
             Record record = wordList.get(i);
             wordMap.put(String.valueOf(record.get("id")), record);
         }
