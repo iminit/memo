@@ -120,6 +120,7 @@
 </div>
 
 <script>
+    var TRUE = 1,FALSE = 0;
     var currNum = 0;
     var historyCache = [];
     var app = new Vue({
@@ -127,7 +128,6 @@
         data: {
             num: '100',
             history: [],
-            alwayShow: false,
             isShow: false,
             num1: '11',
             num2: '12',
@@ -152,8 +152,26 @@
                 });
             },
             loadConfig: function () {
-                var SettingCount = localStorage.getItem("SettingCount");
-                this.SettingCount = SettingCount ? parseInt(SettingCount) : 2;
+                this.getStorageConfig("SettingCount", "int", 2);
+                this.getStorageConfig("SettingIsPic");
+                this.getStorageConfig("SettingAlwaysPic");
+                this.getStorageConfig("SettingHitBtn");
+            },
+            /**
+             *
+             * @param storageKey
+             * @param type
+             * @param defaultValue
+             */
+            getStorageConfig: function (storageKey , type, defaultValue) {
+                var storageValue = localStorage.getItem(storageKey);
+                if(type === undefined || type === "boolean"){
+                    this[storageKey] = storageValue && parseInt(storageValue) === TRUE ? true : false;
+                } else if(type === "int"){
+                    this[storageKey] = storageValue ? parseInt(storageValue) : defaultValue;
+                } else {
+                    console.warn("formatConfig() use in  worng way");
+                }
             },
             getNextNum: function () {
                 if (this.isShow) {
@@ -208,6 +226,20 @@
                 }
                 return ret;
             }
+        },
+        watch: {
+            SettingCount: function () {
+                localStorage.setItem("SettingCount",this.SettingCount);
+            },
+            SettingIsPic: function () {
+                localStorage.setItem("SettingIsPic",this.SettingIsPic ? TRUE : FALSE);
+            },
+            SettingAlwaysPic: function () {
+                localStorage.setItem("SettingAlwaysPic",this.SettingAlwaysPic ? TRUE : FALSE);
+            },
+            SettingHitBtn: function () {
+                localStorage.setItem("SettingHitBtn",this.SettingHitBtn ? TRUE : FALSE);
+            },
         }
     });
 </script>
