@@ -66,20 +66,14 @@
             </div>
             <div class="weui-tab__content">
                 <div class=weui-cells__title>设置</div>
-                <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell" @click="wordPicker()" >
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">词语数量</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" id="wordCountPicker" v-model="wordCount">
-                        </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">检查提交答案</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" v-model:checked="isCheckAnswer"/>
-                        </div>
+                <div class="weui-cell"@click="wordPicker()" >
+                    <div class="weui-cell__bd"><p>词语数量</p></div>
+                    <div class="weui-cell__ft" id="wordCountPicker">{{wordCount}}</div>
+                </div>
+                <div class="weui-cell weui-cell_switch">
+                    <div class="weui-cell__bd">检查提交答案</div>
+                    <div class="weui-cell__ft">
+                        <input class="weui-switch" type="checkbox" v-model:checked="isCheckAnswer"/>
                     </div>
                 </div>
 
@@ -95,22 +89,20 @@
                     </div>
                 </div>
 
-                <div class="weui-cells weui-cells_form">
-                    <div class="weui-cells__title">所有功能</div>
-                    <div class="weui-cells">
-                        <a class="weui-cell weui-cell_access" href="/numemo/">
-                            <div class="weui-cell__bd">
-                                <p>数字记忆</p>
-                            </div>
-                            <div class="weui-cell__ft">numemo</div>
-                        </a>
-                        <a class="weui-cell weui-cell_access" href="/numemo/word">
-                            <div class="weui-cell__bd">
-                                <p>组词</p>
-                            </div>
-                            <div class="weui-cell__ft">word</div>
-                        </a>
-                    </div>
+                <div class="weui-cells__title">所有功能</div>
+                <div class="weui-cells">
+                    <a class="weui-cell weui-cell_access" href="/numemo/">
+                        <div class="weui-cell__bd">
+                            <p>数字记忆</p>
+                        </div>
+                        <div class="weui-cell__ft">numemo</div>
+                    </a>
+                    <a class="weui-cell weui-cell_access" href="/numemo/word">
+                        <div class="weui-cell__bd">
+                            <p>组词</p>
+                        </div>
+                        <div class="weui-cell__ft">word</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -118,7 +110,6 @@
 </div>
 
 <script>
-    var historyCache = [];
     var app = new Vue({
         el: '#app',
         data: {
@@ -156,7 +147,7 @@
             loadConfig: function () {
                 // 把存入localstorage的做成一个合并的对象
                 var wordCount = localStorage.getItem("wordCount");
-                this.wordCount = wordCount ? 2 : parseInt(wordCount);
+                this.wordCount = wordCount ? parseInt(wordCount) : 2 ;
 
             },
             getWords: function () {

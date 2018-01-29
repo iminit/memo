@@ -7,6 +7,11 @@
     <script src="/js/weui.min.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/vue-resource.min.js"></script>
+    <style>
+        .img img{
+            width: 150px;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -23,13 +28,10 @@
                 <div class="header" style="display: block;">
                     <a href="javascript:;" @click="getNextNum()" class="weui-btn weui-btn_default"
                        style="font-size: 64px">{{ num }}</a>
-                    <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn">提示</a>
-                    <label for="switchCP" class="weui-switch-cp">
-                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" v-model:checked="alwayShow"/>
-                        <div class="weui-switch-cp__box"></div>
-                    </label>
-
-                    <div class="img" v-if="isShow">
+                    <template v-if="!SettingAlwaysPic">
+                        <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn" v-if="SettingHitBtn">提示</a>
+                    </template>
+                    <div class="img" v-if="SettingAlwaysPic || isShow">
                         <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
                     </div>
                 </div>
@@ -45,8 +47,10 @@
                 <div class="header" style="display: block;">
                     <a href="javascript:;" @click="getNext2Num()" class="weui-btn weui-btn_default"
                        style="font-size: 64px">{{ num1+ ' ' +num2 }}</a>
-                    <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn">提示</a>
-                    <div class="img" v-if="isShow">
+                    <template v-if="!SettingAlwaysPic">
+                        <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn" v-if="SettingHitBtn">提示</a>
+                    </template>
+                    <div class="img" v-if="SettingAlwaysPic || isShow">
                         <img :src="'/img/numemo/pic-'+num1+'.jpg'" :alt="num1">
                         <img :src="'/img/numemo/pic-'+num2+'.jpg'" :alt="num2">
                     </div>
@@ -69,42 +73,29 @@
                 </div>
             </div>
             <div class="weui-tab__content">
-                <div class=weui-cells__title>设置组词数量</div>
-                <div class="weui-cells weui-cells_radio">
-                    <label class="weui-cell weui-check__label" for="x11">
-                        <div class="weui-cell__bd"><p>2</p></div>
-                        <div class="weui-cell__ft"><input type="radio" class="weui-check" name="radio1" id="x11" :checked="{checked:SettingCount===2}"/><span class="weui-icon-checked"></span></div>
-                    </label>
-                    <label class="weui-cell weui-check__label" for="x12">
-                        <div class="weui-cell__bd"><p>3</p></div>
-                        <div class="weui-cell__ft"><input type="radio" name="radio1" class="weui-check" id="x12" :checked="{checked:SettingCount===3}"/><span class="weui-icon-checked"></span>
-                        </div>
-                    </label>
-                    <label class="weui-cell weui-check__label" for="x13">
-                        <div class="weui-cell__bd"><p>4</p></div>
-                        <div class="weui-cell__ft"><input type="radio" name="radio1" class="weui-check" id="x13" :checked="{checked:SettingCount===4}"/><span class="weui-icon-checked"></span>
-                        </div>
-                    </label>
+                <div class=weui-cells__title>设置</div>
+                <div class="weui-cell"@click="settingCountPicker()" >
+                    <div class="weui-cell__bd"><p>设置组词数量</p></div>
+                    <div class="weui-cell__ft" id="settingCountPicker">{{SettingCount}}</div>
                 </div>
-
                 <div class=weui-cells__title>开关组</div>
                 <div class="weui-cells weui-cells_radio">
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">图片/文字</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" :checked="{checked:SettingIsPic}"/>
+                            <input class="weui-switch" type="checkbox" v-model:checked="SettingIsPic"/>
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">一直显示图片</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" checked=""/>
+                            <input class="weui-switch" type="checkbox" v-model:checked="SettingAlwaysPic"/>
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">显示提示按钮</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox"/>
+                            <input class="weui-switch" type="checkbox" v-model:checked="SettingHitBtn"/>
                         </div>
                     </div>
                 </div>
@@ -129,7 +120,6 @@
 </div>
 
 <script>
-
     var currNum = 0;
     var historyCache = [];
     var app = new Vue({
@@ -147,26 +137,23 @@
             SettingAlwaysPic: false,
             SettingHitBtn: false
         },
+        mounted: function () {
+            this.loadConfig();
+            this.initWeui();
+        },
         methods: {
-            test: function (inputNum) {
-                var ret = [];
-                if (inputNum < 10) {
-                    ret[0] = inputNum;
-                    console.log(ret);
-                    return ret;
-                }
-                var array = (inputNum + "").split("");
-                var j = 0;
-                for (var i = 0; i < array.length; i = i + 2) {
-                    if (array[i] && array[i + 1]) {
-                        ret[j] = parseInt(array[i]) * 10 + parseInt(array[i + 1])
-                    } else if (array[i]) {
-                        ret[j] = parseInt(array[i]);
+            initWeui: function () {
+                var tabIndex = localStorage.getItem("tabIndex");
+                weui.tab('#tab', {
+                    defaultIndex: tabIndex ? tabIndex : 0,
+                    onChange: function (index) {
+                        localStorage.setItem("tabIndex", index);
                     }
-                    j++;
-                }
-                console.log(ret);
-                return ret;
+                });
+            },
+            loadConfig: function () {
+                var SettingCount = localStorage.getItem("SettingCount");
+                this.SettingCount = SettingCount ? parseInt(SettingCount) : 2;
             },
             getNextNum: function () {
                 if (this.isShow) {
@@ -190,6 +177,21 @@
             getNext2Num: function () {
                 this.num1 = this._random();
                 this.num2 = this._random();
+            },
+            settingCountPicker: function () {
+                var that = this;
+                weui.picker([{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4},{label:'5',value:5}], {
+                    className: 'custom-classname',
+                    container: 'body',
+                    defaultValue: [2],
+                    onChange: function (result) {
+                        that.SettingCount = result[0].value;
+                    },
+                    onConfirm: function (result) {
+                        localStorage.setItem("SettingCount",result[0].value);
+                    },
+                    id: 'settingCountPicker'
+                });
             }
         },
         computed: {
@@ -207,15 +209,7 @@
                 return ret;
             }
         }
-    })
-    var tabIndex = localStorage.getItem("tabIndex");
-    weui.tab('#tab', {
-        defaultIndex: tabIndex ? tabIndex : 0,
-        onChange: function (index) {
-            localStorage.setItem("tabIndex", index);
-        }
     });
-
 </script>
 </body>
 </html>
