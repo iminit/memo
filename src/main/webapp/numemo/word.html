@@ -75,6 +75,12 @@
                             <input class="weui-input" id="wordCountPicker" v-model="wordCount">
                         </div>
                     </div>
+                    <div class="weui-cell weui-cell_switch">
+                        <div class="weui-cell__bd">检查提交答案</div>
+                        <div class="weui-cell__ft">
+                            <input class="weui-switch" type="checkbox" v-model:checked="isCheckAnswer"/>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="weui-cells__title">
@@ -83,26 +89,28 @@
                 <div class="weui-cells weui-cells_form">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <textarea class="weui-textarea" placeholder="请输入文本，用'空格'、'逗号'、'换行'、'、'分开" rows="3" v-model="inputWords"></textarea>
+                            <textarea class="weui-textarea" placeholder="输入文本，用空格、逗号、换行、顿号分开" rows="3" v-model="inputWords"></textarea>
                             <div class="weui-textarea-counter"><span>0</span>/200</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="weui-cells__title">所有功能</div>
-                <div class="weui-cells">
-                    <a class="weui-cell weui-cell_access" href="/numemo/">
-                        <div class="weui-cell__bd">
-                            <p>数字记忆</p>
-                        </div>
-                        <div class="weui-cell__ft">numemo</div>
-                    </a>
-                    <a class="weui-cell weui-cell_access" href="/numemo/word">
-                        <div class="weui-cell__bd">
-                            <p>组词</p>
-                        </div>
-                        <div class="weui-cell__ft">word</div>
-                    </a>
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cells__title">所有功能</div>
+                    <div class="weui-cells">
+                        <a class="weui-cell weui-cell_access" href="/numemo/">
+                            <div class="weui-cell__bd">
+                                <p>数字记忆</p>
+                            </div>
+                            <div class="weui-cell__ft">numemo</div>
+                        </a>
+                        <a class="weui-cell weui-cell_access" href="/numemo/word">
+                            <div class="weui-cell__bd">
+                                <p>组词</p>
+                            </div>
+                            <div class="weui-cell__ft">word</div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,29 +129,37 @@
             wordIds: "", // 组词页面，用于提交答案和句子关联
             inputWords: "", // 设置页面，用户批量添加的词语
             searchKey: "",
+            isCheckAnswer: true, // 是否检查提交数据包含所有词组
         },
         mounted: function () {
-            var that = this;
-            var wordCount = localStorage.getItem("wordCount");
-            this.wordCount = wordCount ? 2 : parseInt(wordCount);
-
-            var tabIndex = localStorage.getItem("wordTabIndex");
-            if(tabIndex){
-                tabIndex = parseInt(tabIndex)
-            }
-            this.onTabChange(that,tabIndex);
-            weui.tab('#tab', {
-                defaultIndex: tabIndex ? tabIndex : 0,
-                onChange: function (index) {
-                    localStorage.setItem("wordTabIndex", index);
-                    // todo 通过watch将用户的参数保存下来
-                    that.onTabChange(that, index);
-                }
-            });
-            weui.searchBar('#searchBar');
+            this.loadConfig();
+            this.initWeui();
         },
         methods: {
-            loadData: function () {
+            initWeui: function () {
+                var tabIndex = localStorage.getItem("wordTabIndex");
+                if(tabIndex){
+                    tabIndex = parseInt(tabIndex)
+                }
+                this.onTabChange(this,tabIndex);
+                var that = this;
+                weui.tab('#tab', {
+                    defaultIndex: tabIndex ? tabIndex : 0,
+                    onChange: function (index) {
+                        localStorage.setItem("wordTabIndex", index);
+                        // todo 通过watch将用户的参数保存下来
+                        that.onTabChange(that, index);
+                    }
+                });
+                weui.searchBar('#searchBar');
+            },
+            loadConfig: function () {
+                // 把存入localstorage的做成一个合并的对象
+                var wordCount = localStorage.getItem("wordCount");
+                this.wordCount = wordCount ? 2 : parseInt(wordCount);
+
+            },
+            getWords: function () {
                 this.$http.get("/numemo/words/"+this.wordCount).then(function (response) {
                     var res = response.data;
                     this.words = res;
@@ -152,12 +168,11 @@
                         words = words + (index === 0 ? item.id : "-"+item.id);
                     });
                     this.wordIds = words;
-                    console.log(words)
                 });
             },
             onTabChange: function (that,tabIndex) {
                 switch (tabIndex) {
-                    case 0: this.loadData(); break;
+                    case 0: this.getWords(); break;
                     case 1 : that.loadWordsSentenceList(); break;
                     default: ;
                 }
@@ -169,27 +184,46 @@
                 });
             },
             getNextWords: function () {
-                this.loadData();
+                this.getWords();
             },
             submitSentence: function () {
+                if(!this.inputWordSentence){
+                    weui.topTips('请输入您的答案');
+                    return;
+                }
+                if(this.isCheckAnswer){
+                    var check = this.checkAnswer();
+                    if(!check.flag){
+                        weui.topTips('您的答案未包含所指定词语:'+check.msg);
+                        return;
+                    }
+                }
                 this.$http.post("/numemo/wordsSentenceSave?wordIds="+this.wordIds+"&content="+this.inputWordSentence).then(function (response) {
                     var res = response.data;
                     if(res.error){
-                        weui.alert(res.error);
+                        weui.topTips(res.error);
                     } else {
-                        weui.alert('操作成功');
+                        weui.toast('操作成功', 1000);
                         this.inputWordSentence = "";
                         this.getNextWords();
                     }
                 });
             },
+            checkAnswer: function () {
+                for(var i=0;i<this.words.length;i++){
+                    if(this.inputWordSentence.indexOf(this.words[i].content) === -1){
+                        return {flag: false,msg: this.words[i].content};
+                    }
+                }
+                return {flag: true};
+            },
             submitWords: function () {
                 this.$http.post("/numemo/wordsSave/"+this.inputWords).then(function (response) {
                     var res = response.data;
                     if(res.error){
-                        weui.alert(res.error);
+                        weui.topTips(res.error);
                     } else {
-                        weui.alert('操作成功');
+                        weui.toast('操作成功', 1000);
                         this.inputWordSentence = "";
                         this.getNextWords();
                     }
@@ -222,6 +256,9 @@
         watch: {
             searchKey: function () {
                 this.searchAction();
+            },
+            isCheckAnswer: function () {
+                localStorage.setItem("isCheckAnswer",this.isCheckAnswer);
             }
         },
     });
