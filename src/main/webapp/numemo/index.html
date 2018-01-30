@@ -8,7 +8,7 @@
     <script src="/js/vue.js"></script>
     <script src="/js/vue-resource.min.js"></script>
     <style>
-        .img img{
+        .img img {
             width: 150px;
         }
     </style>
@@ -18,18 +18,17 @@
     <div class="weui-tab" id="tab">
         <div class="weui-navbar">
             <div class="weui-navbar__item">记忆</div>
-            <div class="weui-navbar__item">组词</div>
             <div class="weui-navbar__item">填数</div>
             <div class="weui-navbar__item">设置</div>
         </div>
         <div class="weui-tab__panel">
             <div class="weui-tab__content">
-
                 <div class="header" style="display: block;">
                     <a href="javascript:;" @click="getNextNum()" class="weui-btn weui-btn_default"
                        style="font-size: 64px">{{ num }}</a>
                     <template v-if="!SettingAlwaysPic">
-                        <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn" v-if="SettingHitBtn">提示</a>
+                        <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn"
+                           v-if="SettingHitBtn">提示</a>
                     </template>
                     <div class="img" v-if="SettingAlwaysPic || isShow">
                         <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
@@ -44,37 +43,23 @@
                 </div>
             </div>
             <div class="weui-tab__content">
-                <div class="header" style="display: block;">
-                    <a href="javascript:;" @click="getNext2Num()" class="weui-btn weui-btn_default"
-                       style="font-size: 64px">{{ num1+ ' ' +num2 }}</a>
-                    <template v-if="!SettingAlwaysPic">
-                        <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn" v-if="SettingHitBtn">提示</a>
-                    </template>
-                    <div class="img" v-if="SettingAlwaysPic || isShow">
-                        <img :src="'/img/numemo/pic-'+num1+'.jpg'" :alt="num1">
-                        <img :src="'/img/numemo/pic-'+num2+'.jpg'" :alt="num2">
+                <div class="weui-cells__title">填数 看图 造句</div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd" @click="nextNumbs()"><label class="weui-label">数字</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入一个数字"
+                               v-model="inputNum"/>
                     </div>
                 </div>
-            </div>
-            <div class="weui-tab__content">
-                <div class="weui-cells__title">填数 看图 造句</div>
-                <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">数字</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入一个数字" v-model="inputNum"/>
-                        </div>
-                    </div>
-                    <div class="img">
-                        <template v-if="inputImgs.length>0" v-for="imgNo in inputImgs">
-                            <img :src="'/img/numemo/pic-'+imgNo+'.jpg'" :alt="imgNo">
-                        </template>
-                    </div>
+                <div class="img">
+                    <template v-if="inputImgs.length>0" v-for="imgNo in inputImgs">
+                        <img :src="'/img/numemo/pic-'+imgNo+'.jpg'" :alt="imgNo">
+                    </template>
                 </div>
             </div>
             <div class="weui-tab__content">
                 <div class=weui-cells__title>设置</div>
-                <div class="weui-cell"@click="settingCountPicker()" >
+                <div class="weui-cell" @click="settingCountPicker()">
                     <div class="weui-cell__bd"><p>设置组词数量</p></div>
                     <div class="weui-cell__ft" id="settingCountPicker">{{SettingCount}}</div>
                 </div>
@@ -120,7 +105,7 @@
 </div>
 
 <script>
-    var TRUE = 1,FALSE = 0;
+    var TRUE = 1, FALSE = 0;
     var currNum = 0;
     var historyCache = [];
     var app = new Vue({
@@ -131,7 +116,7 @@
             isShow: false,
             num1: '11',
             num2: '12',
-            inputNum: Math.ceil(Math.random()*10000000),
+            inputNum: "",
             SettingCount: 3,
             SettingIsPic: true,
             SettingAlwaysPic: false,
@@ -144,6 +129,10 @@
         methods: {
             initWeui: function () {
                 var tabIndex = localStorage.getItem("tabIndex");
+                if (tabIndex) {
+                    tabIndex = parseInt(tabIndex);
+                }
+                this.onTabChange(tabIndex);
                 weui.tab('#tab', {
                     defaultIndex: tabIndex ? tabIndex : 0,
                     onChange: function (index) {
@@ -157,17 +146,26 @@
                 this.getStorageConfig("SettingAlwaysPic");
                 this.getStorageConfig("SettingHitBtn");
             },
+            onTabChange: function (tabIndex) {
+                switch (tabIndex) {
+                    case 1:
+                        this.nextNumbs();
+                        break;
+                    default:
+                        ;
+                }
+            },
             /**
              *
              * @param storageKey
              * @param type
              * @param defaultValue
              */
-            getStorageConfig: function (storageKey , type, defaultValue) {
+            getStorageConfig: function (storageKey, type, defaultValue) {
                 var storageValue = localStorage.getItem(storageKey);
-                if(type === undefined || type === "boolean"){
+                if (type === undefined || type === "boolean") {
                     this[storageKey] = storageValue && parseInt(storageValue) === TRUE ? true : false;
-                } else if(type === "int"){
+                } else if (type === "int") {
                     this[storageKey] = storageValue ? parseInt(storageValue) : defaultValue;
                 } else {
                     console.warn("formatConfig() use in  worng way");
@@ -198,7 +196,10 @@
             },
             settingCountPicker: function () {
                 var that = this;
-                weui.picker([{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4},{label:'5',value:5}], {
+                weui.picker([{label: '1', value: 1}, {label: '2', value: 2}, {label: '3', value: 3}, {
+                    label: '4',
+                    value: 4
+                }, {label: '5', value: 5}], {
                     className: 'custom-classname',
                     container: 'body',
                     defaultValue: [2],
@@ -206,10 +207,13 @@
                         that.SettingCount = result[0].value;
                     },
                     onConfirm: function (result) {
-                        localStorage.setItem("SettingCount",result[0].value);
+                        localStorage.setItem("SettingCount", result[0].value);
                     },
                     id: 'settingCountPicker'
                 });
+            },
+            nextNumbs: function () {
+                this.inputNum = Math.ceil(Math.random() * 10000000);
             }
         },
         computed: {
@@ -229,16 +233,16 @@
         },
         watch: {
             SettingCount: function () {
-                localStorage.setItem("SettingCount",this.SettingCount);
+                localStorage.setItem("SettingCount", this.SettingCount);
             },
             SettingIsPic: function () {
-                localStorage.setItem("SettingIsPic",this.SettingIsPic ? TRUE : FALSE);
+                localStorage.setItem("SettingIsPic", this.SettingIsPic ? TRUE : FALSE);
             },
             SettingAlwaysPic: function () {
-                localStorage.setItem("SettingAlwaysPic",this.SettingAlwaysPic ? TRUE : FALSE);
+                localStorage.setItem("SettingAlwaysPic", this.SettingAlwaysPic ? TRUE : FALSE);
             },
             SettingHitBtn: function () {
-                localStorage.setItem("SettingHitBtn",this.SettingHitBtn ? TRUE : FALSE);
+                localStorage.setItem("SettingHitBtn", this.SettingHitBtn ? TRUE : FALSE);
             },
         }
     });

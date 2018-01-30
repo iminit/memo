@@ -132,16 +132,16 @@
             initWeui: function () {
                 var tabIndex = localStorage.getItem("wordTabIndex");
                 if (tabIndex) {
-                    tabIndex = parseInt(tabIndex)
+                    tabIndex = parseInt(tabIndex);
                 }
-                this.onTabChange(this, tabIndex);
+                this.onTabChange(tabIndex);
                 var that = this;
                 weui.tab('#tab', {
                     defaultIndex: tabIndex ? tabIndex : 0,
                     onChange: function (index) {
                         localStorage.setItem("wordTabIndex", index);
                         // todo 通过watch将用户的参数保存下来
-                        that.onTabChange(that, index);
+                        that.onTabChange(index);
                     }
                 });
                 weui.searchBar('#searchBar');
@@ -163,13 +163,13 @@
                     this.wordIds = words;
                 });
             },
-            onTabChange: function (that, tabIndex) {
+            onTabChange: function (tabIndex) {
                 switch (tabIndex) {
                     case 0:
                         this.getWords();
                         break;
                     case 1 :
-                        that.loadWordsSentenceList();
+                        this.loadWordsSentenceList();
                         break;
                     default:
                         ;
