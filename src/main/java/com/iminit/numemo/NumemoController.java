@@ -10,9 +10,7 @@ import com.jfinal.log.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * NumemoController
@@ -53,15 +51,8 @@ public class NumemoController extends Controller {
      * 数字关键词
      */
     public void nums() {
-        List<Num> nums = Num.dao.find("select * from num");
-        Map<String, Num> map = new HashMap<String, Num>();
-        for (int i = 0; i < nums.size(); i++) {
-            Num num = nums.get(i);
-            String n = String.valueOf(num.get("num"));
-            num.remove("num");
-            map.put(n, num);
-        }
-        renderJson(map);
+        List<Num> nums = Num.dao.find("select `num`,`name`,`desc` from num order by id");
+        renderJson(nums);
     }
 
     /**
