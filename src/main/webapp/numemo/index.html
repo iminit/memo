@@ -25,16 +25,18 @@
             <div class="weui-tab__content">
                 <div class="header" style="display: block;">
                     <a href="javascript:;" @click="getNextNum()" class="weui-btn weui-btn_default"
-                       style="font-size: 64px">{{ num }}</a>
+                       style="font-size: 64px">
+                        <div>{{ msg }}
+                            <div class="img" v-if="SettingAlwaysPic || isShow">
+                                <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
+                            </div>
+                        </div></a>
                     <template v-if="!SettingAlwaysPic">
                         <a href="javascript:;" @click="showTip()" class="weui-btn weui-btn_mini weui-btn_warn"
                            v-if="SettingHitBtn">提示</a>
                     </template>
-                    <div class="img" v-if="SettingAlwaysPic || isShow">
-                        <img :src="'/img/numemo/pic-'+num+'.jpg'" :alt="num">
-                    </div>
+
                 </div>
-                已学习：
                 <div class="history-num">
                     <template v-for="item,index in history">
                         <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="showImg(item)">{{item}}</a>
@@ -66,19 +68,19 @@
                 <div class=weui-cells__title>开关组</div>
                 <div class="weui-cells weui-cells_radio">
                     <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">图片/文字</div>
+                        <div class="weui-cell__bd">显示文字</div>
                         <div class="weui-cell__ft">
                             <input class="weui-switch" type="checkbox" v-model:checked="SettingIsPic"/>
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">一直显示图片</div>
+                        <div class="weui-cell__bd">显示图片</div>
                         <div class="weui-cell__ft">
                             <input class="weui-switch" type="checkbox" v-model:checked="SettingAlwaysPic"/>
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">显示提示按钮</div>
+                        <div class="weui-cell__bd">提示按钮</div>
                         <div class="weui-cell__ft">
                             <input class="weui-switch" type="checkbox" v-model:checked="SettingHitBtn"/>
                         </div>
@@ -111,9 +113,11 @@
     var app = new Vue({
         el: '#app',
         data: {
-            num: '100',
+            num: '0',
+            msg: '开始',
             history: [],
             isShow: false,
+            nums: [],
             num1: '11',
             num2: '12',
             inputNum: "",
@@ -123,6 +127,7 @@
             SettingHitBtn: false
         },
         mounted: function () {
+            this.loadNums();
             this.loadConfig();
             this.initWeui();
         },
@@ -145,6 +150,11 @@
                 this.getStorageConfig("SettingIsPic");
                 this.getStorageConfig("SettingAlwaysPic");
                 this.getStorageConfig("SettingHitBtn");
+            },
+            loadNums: function () {
+                this.$http.get("/numemo/nums").then(function (response) {
+                    this.nums = response.data;
+                });
             },
             onTabChange: function (tabIndex) {
                 switch (tabIndex) {
@@ -179,6 +189,7 @@
                 this.history = historyCache;
                 historyCache.unshift(currNum);
                 this.num = currNum;
+                this.msg = this.num +" "+ this.nums[this.num]['name'];
             },
             showImg: function (item) {
                 this.num = item;
@@ -188,7 +199,7 @@
                 this.isShow = !this.isShow;
             },
             _random: function () {
-                return Math.ceil(Math.random() * 100);
+                return Math.floor(Math.random() * 100);
             },
             getNext2Num: function () {
                 this.num1 = this._random();

@@ -19,6 +19,7 @@ public class _MappingKit {
 		arp.addMapping("blog", "id", Blog.class);
 		arp.addMapping("file", "id", File.class);
 		arp.addMapping("memo", "id", Memo.class);
+		arp.addMapping("num", "id", Num.class);
 		arp.addMapping("user", "id", User.class);
 		arp.addMapping("word", "id", Word.class);
 		arp.addMapping("word_sentence", "id", WordSentence.class);

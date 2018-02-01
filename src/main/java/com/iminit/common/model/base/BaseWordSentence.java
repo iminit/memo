@@ -18,6 +18,15 @@ public abstract class BaseWordSentence<M extends BaseWordSentence<M>> extends Mo
 		return getInt("id");
 	}
 
+	public M setWordIds(java.lang.String wordIds) {
+		set("wordIds", wordIds);
+		return (M)this;
+	}
+
+	public java.lang.String getWordIds() {
+		return getStr("wordIds");
+	}
+
 	public M setContent(java.lang.String content) {
 		set("content", content);
 		return (M)this;
