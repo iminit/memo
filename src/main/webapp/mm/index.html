@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #include("_header.html")
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div id="root">
+        <div data-reactroot="" class="layout___1PDTy">
+            <header class="header___FCbfv">
+                <a href="/">
+                    <img class="logo___3seHQ" src="/img/logo.png" alt="logo"></a>
+                <div class="contact___11cqy">
+                    <a href="/create">新增</a>
+                </div>
+            </header>
+            <nav class="nav___9wFJ-">
+                <a href="/" class="#if(view_type==1) 'active___2q-q_' #end">学习中</a>
+                <a href="/2" class="#if(view_type==2) 'active___2q-q_' #end">复习中</a>
+                <a href="/3" class="#if(view_type==3) 'active___2q-q_' #end">再回顾</a>
+            </nav>
+            <main>
+                <div>
+                    <div>
+                        #for(item: memos)
+                        <div class="touchable___25WDv" style=" display: block;">
+                            <a class="timelineItem___1y46j link___2jKS2" href="#('/detail/' + item.id)"
+                               target="_self">
+                                <h2 class="enableVisited">#(item.title)</h2>
+                                <div class="summary___SGzH5">
+                                    <div class="bp-pure___3xB_W">
+                                        <div class="bp-beauty-line___3EG0Z" style="letter-spacing: 0.733333px;">
+                                            #(item.content)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="meta___3CKfY">
+                                    <span>#(item.user)</span>
+                                    <span>/ #(item.category)</span>
+                                    <span>
+                                            <i class="split___1I-N5"></i>
+                                            #(item.create_time)
+                                            <i class="split___1I-N5"></i>
+                                        </span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div id="masking" class="masking___10CSs"></div>
+                        #end
+                    </div>
+                </div>
+            </main>
+            <footer class="footer___1Bw6q">
+                <div class="copyRight___2cP8i">© 2017 iminit.github.io</div>
+            </footer>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -93,13 +93,13 @@
 
                 <div class="weui-cells__title">所有功能</div>
                 <div class="weui-cells">
-                    <a class="weui-cell weui-cell_access" href="/numemo/">
+                    <a class="weui-cell weui-cell_access" href="/">
                         <div class="weui-cell__bd">
                             <p>数字记忆</p>
                         </div>
-                        <div class="weui-cell__ft">numemo</div>
+                        <div class="weui-cell__ft">index</div>
                     </a>
-                    <a class="weui-cell weui-cell_access" href="/numemo/word">
+                    <a class="weui-cell weui-cell_access" href="/word">
                         <div class="weui-cell__bd">
                             <p>组词</p>
                         </div>
@@ -130,10 +130,7 @@
         },
         methods: {
             initWeui: function () {
-                var tabIndex = localStorage.getItem("wordTabIndex");
-                if (tabIndex) {
-                    tabIndex = parseInt(tabIndex);
-                }
+                var tabIndex = parseInt(localStorage.getItem("wordTabIndex") || 0);
                 this.onTabChange(tabIndex);
                 var that = this;
                 weui.tab('#tab', {
@@ -153,7 +150,7 @@
 
             },
             getWords: function () {
-                this.$http.get("/numemo/words/" + this.wordCount).then(function (response) {
+                this.$http.get("/words/" + this.wordCount).then(function (response) {
                     var res = response.data;
                     this.words = res;
                     var words = "";
@@ -176,7 +173,7 @@
                 }
             },
             loadWordsSentenceList: function () {
-                this.$http.get("/numemo/wordsSentenceList/" + this.searchKey).then(function (response) {
+                this.$http.get("/wordsSentenceList/" + this.searchKey).then(function (response) {
                     var res = response.data;
                     this.wordSentences = res;
                 });
@@ -196,7 +193,7 @@
                         return;
                     }
                 }
-                this.$http.post("/numemo/wordsSentenceSave?wordIds=" + this.wordIds + "&content=" + this.inputWordSentence).then(function (response) {
+                this.$http.post("/wordsSentenceSave?wordIds=" + this.wordIds + "&content=" + this.inputWordSentence).then(function (response) {
                     var res = response.data;
                     if (res.error) {
                         weui.topTips(res.error);
@@ -221,7 +218,7 @@
                 return {flag: true};
             },
             submitWords: function () {
-                this.$http.post("/numemo/wordsSave/" + this.inputWords).then(function (response) {
+                this.$http.post("/wordsSave/" + this.inputWords).then(function (response) {
                     var res = response.data;
                     if (res.error) {
                         weui.topTips(res.error);

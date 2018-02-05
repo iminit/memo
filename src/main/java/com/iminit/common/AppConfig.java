@@ -4,8 +4,8 @@ import com.iminit.blog.BlogController;
 import com.iminit.common.model._MappingKit;
 import com.iminit.file.FileController;
 import com.iminit.index.IndexController;
+import com.iminit.index.MmController;
 import com.iminit.memo.MemoController;
-import com.iminit.numemo.NumemoController;
 import com.iminit.user.UserController;
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
@@ -52,9 +52,9 @@ public class AppConfig extends JFinalConfig {
 	 * 配置路由
 	 */
 	public void configRoute(Routes me) {
-		me.add("/", IndexController.class, "index");	// 第三个参数为该Controller的视图存放路径
+		me.add("/", IndexController.class, "index");
+		me.add("/mm", MmController.class);	// 第三个参数为该Controller的视图存放路径
 		me.add("/memo", MemoController.class);
-		me.add("/numemo", NumemoController.class);
 		me.add("/blog", BlogController.class);
 		me.add("/user", UserController.class);
 		me.add("/file", FileController.class);

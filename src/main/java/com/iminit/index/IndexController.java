@@ -1,87 +1,111 @@
 package com.iminit.index;
 
-import com.iminit.common.model.Memo;
-import com.iminit.common.utils.CS;
-import com.iminit.memo.MemoService;
+import com.iminit.common.model.Num;
+import com.iminit.common.model.WordSentence;
+import com.iminit.word.WordService;
 import com.jfinal.core.Controller;
-import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.kit.Kv;
+import com.jfinal.kit.StrKit;
+import com.jfinal.log.Log;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
  * IndexController
  */
 public class IndexController extends Controller {
+
+    private static final Log log = Log.getLog(IndexController.class);
+
+    static WordService wordService = WordService.me;
+    static WordSentence wordSentenceDao = WordSentence.dao;
+
     public void index() {
-        Integer type = getParaToInt(0, CS.TYPE_1);
-        if (type > CS.TYPE_3 || type < CS.TYPE_1) {
-            type = CS.TYPE_1;
-        }
-        List<Record> data = srv.getData2(type);
-        setAttr("memos", data);
-    }
-
-    public void test(){
-        render("test.html");
-    }
-    public void admin() {
-        render("admin.html");
-    }
-
-    static MemoService srv = MemoService.me;
-
-    /**
-     * 数据请求接口
-     * get/0-day,get/1-day
-     */
-    public void detail() {
-        Memo memo = srv.findById(getParaToInt(0));
-        setAttr("memo", memo);
-        render("detail.html");
     }
 
     /**
-     * 数据请求接口
-     * get/0-day,get/1-day
+     * 阅读测试
      */
-    public void get() {
-        Integer day = getParaToInt(0);
-        if (checkVaild(day)) {
-            renderJson(srv.getData(day));
+    public void read() {
+
+    }
+
+    /**
+     * 组词游戏
+     */
+    public void word() {
+    }
+
+    /**
+     * 组词数据
+     */
+    public void words() {
+        Integer n = getParaToInt(0, 2);
+        renderJson(wordService.findNByRandom(n));
+    }
+
+    /**
+     * 数字关键词
+     */
+    public void nums() {
+        List<Num> nums = Num.dao.find("select `num`,`name`,`desc` from num order by id");
+        renderJson(nums);
+    }
+
+    /**
+     * 组词数据
+     */
+    public void wordsSave() {
+        String words = getPara();
+        if (StrKit.isBlank(words)) {
+            renderJson();
         } else {
-            renderJson("isOk", false);
-        }
-    }
-
-    /**
-     * 检查参数是否2的倍数，0也在内
-     *
-     * @param day
-     * @return
-     */
-    private boolean checkVaild(int day) {
-        double temp = 0;
-        int i = 0;
-        while (day >= temp) {
-            if (temp == day) {
-                return true;
+            try {
+                words = URLDecoder.decode(words, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            temp = Math.pow(2, i++);
+            int[] ints = wordService.wordsSave(words);
+            renderJson(ints);
         }
-        return false;
     }
-
 
     /**
-     * 创建新记录
+     * 组词保存到数据库
      */
-    public void create() {
-        render("create.html");
+    public void wordsSentenceSave() {
+        try {
+            WordSentence model = getModel(WordSentence.class, "");
+            boolean save = model.save();
+            renderJson(Kv.by("c", save));
+        } catch (Exception e) {
+            e.printStackTrace();
+            renderJson(Kv.by("c", "no").set("error", e.getMessage()));
+        }
     }
 
-    public void docreate() {
-        srv.save(getModel(Memo.class));
-        redirect("/");
+    /**
+     * 历史组词记录
+     */
+    public void wordsSentenceList() {
+        String word = getPara();
+        if (StrKit.isBlank(word)) {
+            renderJson(wordSentenceDao.find());
+        } else {
+            try {
+                word = URLDecoder.decode(word, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String[] ids = wordService.getIdByWord(word);
+            String id = "";
+            if (ids.length > 0) {
+                id = ids[0];
+            }
+            renderJson(wordSentenceDao.wordsSentenceList(id, word));
+        }
     }
 }
 
