@@ -105,6 +105,12 @@
                         </div>
                         <div class="weui-cell__ft">word</div>
                     </a>
+                    <a class="weui-cell weui-cell_access" href="javascript:void(0)" @click="clearLocalStorage()">
+                        <div class="weui-cell__bd">
+                            <p>清缓存</p>
+                        </div>
+                        <div class="weui-cell__ft">localStorage</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -131,6 +137,7 @@
         methods: {
             initWeui: function () {
                 var tabIndex = parseInt(localStorage.getItem("wordTabIndex") || 0);
+                var tabIndex = tabIndex == 2 ? 0 : tabIndex;
                 this.onTabChange(tabIndex);
                 var that = this;
                 weui.tab('#tab', {
@@ -251,6 +258,10 @@
                     },
                     id: 'wordCountPicker'
                 });
+            },
+            clearLocalStorage: function () {
+                localStorage.clear();
+                location.reload();
             }
         },
         watch: {

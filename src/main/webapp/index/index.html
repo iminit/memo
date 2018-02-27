@@ -65,13 +65,9 @@
                                v-model="inputNum"/>
                     </div>
                 </div>
-                <div class="img">
-                    <template v-if="inputImgs.length>0" v-for="imgNo in inputImgs">
-                        <div class="img_warp">
-                            <img :src="'/img/numemo/pic-'+imgNo+'.jpg'" :alt="imgNo">
-                            <p v-if="SettingShowTxt" class="img_warp_font">{{imgNo+" "+numsMap[imgNo]}}</p>
-                        </div>
-                    </template>
+                <div class="img_warp" v-if="inputImgs.length>0" v-for="imgNo in inputImgs">
+                    <img :src="'/img/numemo/pic-'+imgNo+'.jpg'" :alt="imgNo">
+                    <div v-if="SettingShowTxt" class="img_warp_text">{{imgNo+" "+numsMap[imgNo]}}</div>
                 </div>
             </div>
             <div class="weui-tab__content">
@@ -128,6 +124,12 @@
                         </div>
                         <div class="weui-cell__ft">word</div>
                     </a>
+                    <a class="weui-cell weui-cell_access" href="javascript:void(0)" @click="clearLocalStorage()">
+                        <div class="weui-cell__bd">
+                            <p>清缓存</p>
+                        </div>
+                        <div class="weui-cell__ft">localStorage</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -165,6 +167,7 @@
         methods: {
             initWeui: function () {
                 var tabIndex = parseInt(localStorage.getItem("tabIndex") || 0);
+                var tabIndex = tabIndex == 2 ? 0 : tabIndex;
                 // 标签页函数绑定，用于启动默认函数功能
                 if (tabIndex === 1) {
                     this.nextInputNumb();
@@ -266,6 +269,10 @@
                     ret[j] = input.substring(i, end);
                 }
                 this.inputImgs = ret;
+            },
+            clearLocalStorage: function () {
+                localStorage.clear();
+                location.reload();
             }
         },
         watch: {

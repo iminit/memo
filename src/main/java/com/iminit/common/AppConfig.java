@@ -7,6 +7,7 @@ import com.iminit.index.IndexController;
 import com.iminit.index.MmController;
 import com.iminit.memo.MemoController;
 import com.iminit.user.UserController;
+import com.iminit.weixin.WeixinMsgController;
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
@@ -54,6 +55,7 @@ public class AppConfig extends JFinalConfig {
 	public void configRoute(Routes me) {
 		me.add("/", IndexController.class, "index");
 		me.add("/mm", MmController.class);	// 第三个参数为该Controller的视图存放路径
+		me.add("/weixin", WeixinMsgController.class);
 		me.add("/memo", MemoController.class);
 		me.add("/blog", BlogController.class);
 		me.add("/user", UserController.class);
@@ -103,5 +105,10 @@ public class AppConfig extends JFinalConfig {
 	 */
 	public void configHandler(Handlers me) {
 		
+	}
+
+	public void afterJFinalStart() {
+//		ApiConfig apiConfig = new ApiConfig(PropKit.get("token"));
+//		ApiConfigKit.setThreadLocalAppId(apiConfig);
 	}
 }
