@@ -52,15 +52,13 @@
     $("#date-picker1").calendar();
     $("#date-picker2").calendar();
     $('#btn').on('click', function(){
-        var t1 = $("#date-picker1").val();
-        var t2 = $("#date-picker2").val();
-        $.get("/timeDiff?t1="+t1+"&t2="+t2, function (data) {
-            var str = JSON.stringify(data);
-//            alert(str);
-            var temp = data.year+"年"+data.month+"月"+data.day+"天"
-            $("#time").html(temp);
+        var from = $("#date-picker1").val();
+        var to = $("#date-picker2").val();
+        $.get("/timeDiff?from="+from+"&to="+to, function (data) {
+            var temp = data.reset ? "反了：":"";
+            var str = temp + data.year+"年"+data.month+"月"+data.day+"天"
+            $("#time").html(str);
         });
-//        $("#time").html(t1);
     });
 </script>
 </body>

@@ -7,6 +7,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
+import com.xiaoleilu.hutool.date.DateTime;
 import com.xiaoleilu.hutool.date.DateUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -116,6 +117,12 @@ public class IndexController extends Controller {
         private int month;
         private int day;
 
+        public DayCompare(int year, int month, int day) {
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+
         public int getYear() {
             return year;
         }
@@ -137,12 +144,6 @@ public class IndexController extends Controller {
         }
 
         public void setDay(int day) {
-            this.day = day;
-        }
-
-        public DayCompare(int year, int month, int day) {
-            this.year = year;
-            this.month = month;
             this.day = day;
         }
 
@@ -171,6 +172,12 @@ public class IndexController extends Controller {
      * @return
      */
     public static DayCompare dayComparePrecise(Date fromDate, Date toDate) {
+        // 如果截止时间小于开始时间，则调换一下位置
+        if (fromDate.after(toDate)) {
+            Date temp = fromDate;
+            fromDate = toDate;
+            toDate = temp;
+        }
         Calendar from = Calendar.getInstance();
         from.setTime(fromDate);
         Calendar to = Calendar.getInstance();
@@ -179,9 +186,8 @@ public class IndexController extends Controller {
         int toDay = to.get(Calendar.DAY_OF_MONTH);
 
         int _months = (to.get(Calendar.YEAR) - from.get(Calendar.YEAR)) * 12 + to.get(Calendar.MONTH) - from.get(Calendar.MONTH); // 计算出的月份
-
         int d = toDay - fromDay;
-        if (d < 0) {
+        if (_months > 0 && d < 0) {
             // 当截止日期天数比起始日期小，计算截止日期上一个月的天数
             int monthTemp = to.get(Calendar.MONTH);
             to.set(Calendar.MONTH, monthTemp - 1);
@@ -213,12 +219,22 @@ public class IndexController extends Controller {
 
     public void timeDiff() {
         try {
-            String t1 = getPara("t1");
-            String t2 = getPara("t2");
-            DayCompare dayCompare = dayComparePrecise(DateUtil.parse(t1, "yyyy/MM/dd"), DateUtil.parse(t2, "yyyy/MM/dd"));
+            String from = getPara("from");
+            String to = getPara("to");
+            DateTime parseFrom = null;
+            DateTime parseTo = null;
+            try {
+                parseFrom = DateUtil.parse(from, "yyyy/MM/dd");
+                parseTo = DateUtil.parse(to, "yyyy/MM/dd");
+            } catch (Exception e) {
+//                e.printStackTrace();
+                renderJson(e.getMessage());
+                return;
+            }
+            DayCompare dayCompare = dayComparePrecise(parseFrom, parseTo);
             renderJson(dayCompare);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             renderJson(e.getMessage());
         }
     }
