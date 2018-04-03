@@ -159,6 +159,12 @@ public class IndexController extends Controller {
     /**
      * 计算2个日期之间相差的  相差多少年月日
      * 比如：2011-02-02 到  2017-03-02 相差 6年，1个月，0天
+     * <p>
+     * 计算两时间 年数、月数、天数
+     * ① 先从天数开始计算，
+     * ② 再计算两个时间的月份数
+     * ③ 根据月份计算有几年
+     * 测试： System.out.println(dayComparePrecise(DateUtil.parse("2012/01/14", "yyyy/MM/dd"), DateUtil.parse("2015/02/15", "yyyy/MM/dd")););
      *
      * @param fromDate
      * @param toDate
@@ -169,17 +175,37 @@ public class IndexController extends Controller {
         from.setTime(fromDate);
         Calendar to = Calendar.getInstance();
         to.setTime(toDate);
-        int fromYear = from.get(Calendar.YEAR);
-        int fromMonth = from.get(Calendar.MONTH);
         int fromDay = from.get(Calendar.DAY_OF_MONTH);
-        int toYear = to.get(Calendar.YEAR);
-        int toMonth = to.get(Calendar.MONTH);
         int toDay = to.get(Calendar.DAY_OF_MONTH);
-        int year = toYear - fromYear;
-        int month = toMonth - fromMonth;
-        int day = toDay - fromDay;
-        return new DayCompare(year, month, day);
+
+        int _months = (to.get(Calendar.YEAR) - from.get(Calendar.YEAR)) * 12 + to.get(Calendar.MONTH) - from.get(Calendar.MONTH); // 计算出的月份
+
+        int d = toDay - fromDay;
+        if (d < 0) {
+            // 当截止日期天数比起始日期小，计算截止日期上一个月的天数
+            int monthTemp = to.get(Calendar.MONTH);
+            to.set(Calendar.MONTH, monthTemp - 1);
+            int _lastMonthDays = getDaysOfMonth(to.getTime());
+            d = toDay + _lastMonthDays - fromDay;
+            _months--;
+        }
+        int y = _months / 12;
+        int m = _months % 12;
+        return new DayCompare(y, m, d);
     }
+
+    /**
+     * JDK接口 计算某年某月多少天
+     *
+     * @param date 需要解析的时间
+     * @return
+     */
+    public static int getDaysOfMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
 
     public void time() {
 
@@ -189,9 +215,9 @@ public class IndexController extends Controller {
         try {
             String t1 = getPara("t1");
             String t2 = getPara("t2");
-            DayCompare dayCompare = dayComparePrecise(DateUtil.parse(t1,"yyyy/MM/dd"), DateUtil.parse(t2,"yyyy/MM/dd"));
+            DayCompare dayCompare = dayComparePrecise(DateUtil.parse(t1, "yyyy/MM/dd"), DateUtil.parse(t2, "yyyy/MM/dd"));
             renderJson(dayCompare);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             renderJson(e.getMessage());
         }
